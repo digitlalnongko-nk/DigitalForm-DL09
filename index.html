@@ -21,7 +21,7 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            background-color: #fafaf9;
+            background-color: #fff0f5; /* สีชมพูอ่อนมากๆ */
             overflow-x: hidden;
         }
         
@@ -30,7 +30,7 @@
         }
 
         .form-radio {
-            accent-color: #10b981; 
+            accent-color: #ec4899; /* สีชมพู Pink 500 */
         }
         
         .hidden-smooth {
@@ -48,63 +48,67 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* เอฟเฟกต์กระจกใส (Glassmorphism) แบบน่ารักๆ */
         .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.08); 
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 15px 35px rgba(244, 114, 182, 0.15); /* เงาสีชมพูอ่อน */
         }
 
         input:focus, select:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.2);
+            border-color: #f472b6;
         }
 
-        /* พื้นหลังแสงออโรร่าลอยได้ */
-        .aurora-bg {
+        /* --------------------------------------
+           ลูกเล่นใหม่: พื้นหลังสีพาสเทลน่ารักๆ
+           -------------------------------------- */
+        .pastel-bg {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1;
             overflow: hidden;
         }
-        .aurora-blob {
+        .pastel-blob {
             position: absolute;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(70px);
             opacity: 0.6;
-            animation: floatBlob 12s infinite alternate ease-in-out;
+            animation: floatBlob 10s infinite alternate ease-in-out;
         }
         .blob-1 {
-            width: 400px; height: 400px;
-            background: #a7f3d0; 
-            top: -10%; left: -10%;
+            width: 350px; height: 350px;
+            background: #fbcfe8; /* ชมพูพาสเทล */
+            top: -5%; left: -10%;
         }
         .blob-2 {
-            width: 350px; height: 350px;
-            background: #fef08a; 
+            width: 300px; height: 300px;
+            background: #e9d5ff; /* ม่วงพาสเทล */
             bottom: -5%; right: -5%;
-            animation-delay: -5s;
+            animation-delay: -3s;
         }
         .blob-3 {
-            width: 300px; height: 300px;
-            background: #d9f99d; 
-            top: 40%; left: 60%;
-            animation-delay: -2s;
+            width: 250px; height: 250px;
+            background: #bfdbfe; /* ฟ้าพาสเทล */
+            top: 45%; left: 55%;
+            animation-delay: -5s;
         }
         @keyframes floatBlob {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(40px, -40px) scale(1.1); }
+            100% { transform: translate(30px, -30px) scale(1.1); }
         }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8 flex items-center justify-center relative">
 
-    <div class="aurora-bg">
-        <div class="aurora-blob blob-1"></div>
-        <div class="aurora-blob blob-2"></div>
-        <div class="aurora-blob blob-3"></div>
+    <!-- พื้นหลังเคลื่อนไหวสีพาสเทล -->
+    <div class="pastel-bg">
+        <div class="pastel-blob blob-1"></div>
+        <div class="pastel-blob blob-2"></div>
+        <div class="pastel-blob blob-3"></div>
     </div>
 
     <!-- Container หลัก -->
@@ -113,33 +117,33 @@
         <!-- แบบฟอร์ม -->
         <div id="formContainer" class="glass-card rounded-3xl overflow-hidden transition-all duration-500">
             
-            <!-- Header โครงการแบบมินิมอล เขียว-เหลือง -->
-            <div class="bg-gradient-to-br from-emerald-500 to-lime-400 p-8 text-white text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -translate-y-12 translate-x-12"></div>
-                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full translate-y-10 -translate-x-8"></div>
+            <!-- Header โครงการแบบสีชมพู-ม่วง น่ารักสดใส -->
+            <div class="bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-400 p-8 text-white text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-20 rounded-full -translate-y-12 translate-x-12"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-20 rounded-full translate-y-10 -translate-x-8"></div>
                 
-                <div class="bg-white/20 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 backdrop-blur-md shadow-sm border border-white/40 rotate-3 transform hover:rotate-12 transition-transform duration-300">
+                <div class="bg-white/30 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 backdrop-blur-md shadow-sm border border-white/50 rotate-3 transform hover:-rotate-6 transition-transform duration-300">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
                 </div>
-                <h1 class="text-2xl font-semibold mb-2 drop-shadow-sm text-white">หลักสูตรการเข้าใจดิจิทัล</h1>
-                <p class="text-sm text-emerald-50 font-light mb-5">รุ่นที่ 9 สำหรับเด็กและเยาวชน (อายุ 9 - 17 ปี)</p>
+                <h1 class="text-2xl font-semibold mb-2 drop-shadow-md text-white">หลักสูตรการเข้าใจดิจิทัล</h1>
+                <p class="text-sm text-pink-50 font-light mb-5">รุ่นที่ 9 สำหรับเด็กและเยาวชน (อายุ 9 - 17 ปี)</p>
                 
-                <div class="bg-black/10 rounded-2xl p-3 inline-block text-xs text-left shadow-inner border border-white/20 backdrop-blur-sm w-full font-medium">
-                    <div class="flex items-center mb-2 text-white">
-                        <div class="bg-white/20 p-1.5 rounded-lg mr-3"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>
+                <div class="bg-white/20 rounded-2xl p-3 inline-block text-xs text-left shadow-inner border border-white/30 backdrop-blur-sm w-full font-medium">
+                    <div class="flex items-center mb-2 text-white drop-shadow-sm">
+                        <div class="bg-white/30 p-1.5 rounded-lg mr-3"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>
                         <span>วันที่ 9 - 11 พฤศจิกายน 2569</span>
                     </div>
-                    <div class="flex items-center text-white">
-                        <div class="bg-white/20 p-1.5 rounded-lg mr-3"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></div>
+                    <div class="flex items-center text-white drop-shadow-sm">
+                        <div class="bg-white/30 p-1.5 rounded-lg mr-3"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></div>
                         <span>โรงเรียนหนองโกวิชาประสิทธิ์พิทยาคม</span>
                     </div>
                 </div>
             </div>
 
-            <div class="px-6 pt-6 pb-2 flex items-center border-b border-gray-100/50">
-                <div class="w-1.5 h-6 bg-gradient-to-b from-emerald-400 to-lime-400 rounded-full mr-3"></div>
+            <div class="px-6 pt-6 pb-2 flex items-center border-b border-pink-100/50">
+                <div class="w-2 h-6 bg-gradient-to-b from-pink-400 to-purple-400 rounded-full mr-3"></div>
                 <h2 class="text-xl font-medium text-gray-700">แบบฟอร์มตรวจสอบข้อมูล</h2>
             </div>
             
@@ -147,8 +151,8 @@
                 
                 <!-- ข้อ 1 (แบบเลือกชื่อ) -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2" for="student_select">1. เลือกรายชื่อของคุณ <span class="text-emerald-500">*</span></label>
-                    <select id="student_select" required class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-white/50 hover:bg-white text-gray-700 appearance-none shadow-sm bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_12px] bg-no-repeat bg-[position:right_1rem_center]">
+                    <label class="block text-sm font-medium text-gray-700 mb-2" for="student_select">1. เลือกรายชื่อของคุณ <span class="text-pink-500">*</span></label>
+                    <select id="student_select" required class="w-full px-4 py-3 border border-pink-100 rounded-xl transition-all bg-white/70 hover:bg-white text-gray-700 appearance-none shadow-sm bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23F472B6%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_12px] bg-no-repeat bg-[position:right_1rem_center]">
                         <option value="" disabled selected>-- กดเพื่อค้นหาชื่อของคุณ --</option>
                         
                         <optgroup label="ชั้นมัธยมศึกษาปีที่ 1 (ม.1)">
@@ -190,48 +194,48 @@
                 </div>
 
                 <!-- ข้อ 2 -->
-                <div class="border-t border-gray-100 pt-5">
+                <div class="border-t border-pink-100/50 pt-5">
                     <label class="block text-sm font-medium text-gray-700 mb-3">2. ตรวจสอบชื่อ-สกุลของคุณ</label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-300 hover:bg-emerald-50 transition-all bg-white/50 shadow-sm">
-                            <input type="radio" name="name_status" value="ถูกต้อง" class="w-4 h-4 text-emerald-500 form-radio" required onchange="toggleCorrectName(false)">
+                        <label class="flex items-center p-3.5 border border-pink-100 rounded-xl cursor-pointer hover:border-purple-300 hover:bg-purple-50 transition-all bg-white/70 shadow-sm">
+                            <input type="radio" name="name_status" value="ถูกต้อง" class="w-4 h-4 text-purple-500 form-radio" required onchange="toggleCorrectName(false)">
                             <span class="ml-3 text-sm text-gray-700 font-medium">ชื่อในระบบถูกต้องแล้ว</span>
                         </label>
-                        <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-lime-400 hover:bg-lime-50 transition-all bg-white/50 shadow-sm">
-                            <input type="radio" name="name_status" value="มีจุดต้องแก้ไข" class="w-4 h-4 text-lime-500 form-radio" required onchange="toggleCorrectName(true)">
+                        <label class="flex items-center p-3.5 border border-pink-100 rounded-xl cursor-pointer hover:border-pink-300 hover:bg-pink-50 transition-all bg-white/70 shadow-sm">
+                            <input type="radio" name="name_status" value="มีจุดต้องแก้ไข" class="w-4 h-4 text-pink-500 form-radio" required onchange="toggleCorrectName(true)">
                             <span class="ml-3 text-sm text-gray-700 font-medium">มีจุดต้องแก้ไข (พิมพ์ใหม่)</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- ข้อ 3 (แสดงเมื่อเลือกมีจุดต้องแก้ไข) -->
-                <div id="correctedNameDiv" class="hidden-smooth bg-gradient-to-r from-lime-50 to-emerald-50 p-5 rounded-xl border border-lime-100 shadow-inner">
-                    <label class="block text-sm font-medium text-emerald-800 mb-2" for="corrected_name">พิมพ์ ชื่อ-สกุล (ที่ถูกต้อง) ลงในช่องนี้</label>
-                    <input type="text" id="corrected_name" class="w-full px-4 py-3 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-400 outline-none bg-white text-gray-700" placeholder="เช่น นายสิทธิศักดิ์ เสนาวัน">
+                <div id="correctedNameDiv" class="hidden-smooth bg-gradient-to-r from-pink-50 to-purple-50 p-5 rounded-xl border border-pink-100 shadow-inner">
+                    <label class="block text-sm font-medium text-pink-700 mb-2" for="corrected_name">พิมพ์ ชื่อ-สกุล (ที่ถูกต้อง) ลงในช่องนี้</label>
+                    <input type="text" id="corrected_name" class="w-full px-4 py-3 border border-pink-200 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none bg-white text-gray-700" placeholder="เช่น นายสิทธิศักดิ์ เสนาวัน">
                 </div>
 
                 <!-- ข้อมูลติดต่อ -->
-                <div class="border-t border-gray-100 pt-5 space-y-5">
+                <div class="border-t border-pink-100/50 pt-5 space-y-5">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">เบอร์โทรศัพท์ (ปัจจุบัน) <span class="text-emerald-500">*</span></label>
-                        <input type="tel" id="phone" required pattern="[0-9]{9,10}" class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-white/50 hover:bg-white text-gray-700 shadow-sm" placeholder="เช่น 0812345678">
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">เบอร์โทรศัพท์ (ปัจจุบัน) <span class="text-pink-500">*</span></label>
+                        <input type="tel" id="phone" required pattern="[0-9]{9,10}" class="w-full px-4 py-3 border border-pink-100 rounded-xl transition-all bg-white/70 hover:bg-white text-gray-700 shadow-sm" placeholder="เช่น 0812345678">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="email">อีเมล (ปัจจุบัน)</label>
-                        <input type="email" id="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-white/50 hover:bg-white text-gray-700 shadow-sm" placeholder="เช่น example@gmail.com (ถ้ามี)">
+                        <input type="email" id="email" class="w-full px-4 py-3 border border-pink-100 rounded-xl transition-all bg-white/70 hover:bg-white text-gray-700 shadow-sm" placeholder="เช่น example@gmail.com (ถ้ามี)">
                     </div>
                 </div>
 
                 <!-- สถานะ ThaID -->
-                <div class="border-t border-gray-100 pt-5">
-                    <label class="block text-sm font-medium text-gray-700 mb-3">สถานะแอปพลิเคชัน ThaID <span class="text-emerald-500">*</span></label>
+                <div class="border-t border-pink-100/50 pt-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">สถานะแอปพลิเคชัน ThaID <span class="text-pink-500">*</span></label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-300 hover:bg-emerald-50 transition-all bg-white/50 shadow-sm">
-                            <input type="radio" name="thaid_status" value="ติดตั้งแล้ว" class="w-4 h-4 text-emerald-500 form-radio" required>
+                        <label class="flex items-center p-3.5 border border-pink-100 rounded-xl cursor-pointer hover:border-indigo-300 hover:bg-indigo-50 transition-all bg-white/70 shadow-sm">
+                            <input type="radio" name="thaid_status" value="ติดตั้งแล้ว" class="w-4 h-4 text-indigo-500 form-radio" required>
                             <span class="ml-3 text-sm text-gray-700 font-medium">ติดตั้งและลงทะเบียนแล้ว</span>
                         </label>
-                        <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-yellow-400 hover:bg-yellow-50 transition-all bg-white/50 shadow-sm">
-                            <input type="radio" name="thaid_status" value="ยังไม่ติดตั้ง" class="w-4 h-4 text-yellow-500 form-radio" required>
+                        <label class="flex items-center p-3.5 border border-pink-100 rounded-xl cursor-pointer hover:border-orange-300 hover:bg-orange-50 transition-all bg-white/70 shadow-sm">
+                            <input type="radio" name="thaid_status" value="ยังไม่ติดตั้ง" class="w-4 h-4 text-orange-400 form-radio" required>
                             <span class="ml-3 text-sm text-gray-700 font-medium">ยังไม่ติดตั้ง</span>
                         </label>
                     </div>
@@ -239,8 +243,8 @@
 
                 <!-- ปุ่มส่งข้อมูล -->
                 <div class="pt-6 pb-2">
-                    <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-emerald-500 to-lime-500 hover:from-emerald-600 hover:to-lime-600 text-white font-medium py-4 px-4 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:shadow-[0_10px_25px_rgba(16,185,129,0.4)] transition-all transform hover:-translate-y-1 flex justify-center items-center">
-                        <span id="btnText" class="text-lg">ยืนยันการบันทึกข้อมูล</span>
+                    <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white font-medium py-4 px-4 rounded-xl shadow-[0_10px_20px_rgba(236,72,153,0.3)] hover:shadow-[0_10px_25px_rgba(236,72,153,0.4)] transition-all transform hover:-translate-y-1 flex justify-center items-center">
+                        <span id="btnText" class="text-lg">ยืนยันการบันทึกข้อมูล 🤍</span>
                         <svg id="loadingSpinner" class="animate-spin h-6 w-6 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -250,29 +254,44 @@
             </form>
         </div>
 
-        <!-- หน้าต่างแจ้งเตือนสำเร็จ (ดีไซน์ใหม่ พร้อมปุ่มเข้า LINE) -->
-        <div id="successMessage" class="hidden glass-card rounded-3xl p-8 md:p-10 text-center border border-white transition-all transform scale-95 opacity-0">
-            <div class="w-24 h-24 bg-gradient-to-tr from-emerald-400 to-lime-300 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_10px_20px_rgba(16,185,129,0.2)]">
-                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- หน้าต่างแจ้งเตือนสำเร็จ (ดีไซน์ใหม่ พร้อมปุ่มและ QR Code LINE) -->
+        <div id="successMessage" class="hidden glass-card rounded-3xl p-6 md:p-10 text-center border border-white transition-all transform scale-95 opacity-0">
+            <div class="w-20 h-20 bg-gradient-to-tr from-pink-300 to-purple-300 rounded-full flex items-center justify-center mx-auto mb-4 shadow-[0_10px_20px_rgba(236,72,153,0.2)]">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
                 </svg>
             </div>
             
-            <h3 class="text-2xl font-semibold text-gray-800 mb-3 drop-shadow-sm">เยี่ยมมาก! บันทึกข้อมูลสำเร็จ</h3>
-            <p class="text-gray-500 mb-8 font-light">กรุณากดปุ่มด้านล่างเพื่อเข้าร่วมกลุ่ม LINE ของโครงการ เพื่อรับข่าวสารและนัดหมายครับ</p>
+            <h3 class="text-2xl font-semibold text-gray-800 mb-2 drop-shadow-sm">บันทึกข้อมูลสำเร็จ! ✨</h3>
+            <p class="text-gray-500 mb-6 font-light text-sm md:text-base">ขอบคุณที่ให้ความร่วมมือครับ<br>อย่าลืมเข้ากลุ่ม LINE เพื่อรับข่าวสารกิจกรรมนะ</p>
             
-            <!-- ส่วนปุ่มเข้ากลุ่ม LINE -->
-            <div class="space-y-4 mb-8 pb-8 border-b border-gray-100">
-                <a href="https://line.me/ti/g/r6sZb7D2SH" target="_blank" class="flex items-center justify-center bg-[#06C755] hover:bg-[#05b34c] text-white py-3.5 px-6 rounded-2xl font-medium transition-all transform hover:-translate-y-1 shadow-[0_8px_20px_rgba(6,199,85,0.3)]">
-                    <svg class="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="currentColor">
+            <!-- ส่วน QR Code และ ปุ่ม LINE แบบน่ารักๆ -->
+            <div class="bg-pink-50/60 rounded-2xl p-4 mb-6 border border-pink-100 shadow-inner">
+                
+                <p class="text-sm font-medium text-pink-600 mb-3">สแกน QR Code เข้ากลุ่ม</p>
+                
+                <!-- รูปภาพ QR Code (ดึงไฟล์ S_69459974_0.jpg ที่อัปโหลดใน GitHub) -->
+                <div class="bg-white p-2 rounded-2xl shadow-sm inline-block mb-3 border border-pink-100">
+                    <img src="S_69459974_0.jpg" alt="QR Code กลุ่ม LINE" class="w-36 h-36 object-cover rounded-xl mx-auto">
+                </div>
+                
+                <div class="flex items-center justify-center space-x-3 mb-3">
+                    <div class="h-[1px] w-12 bg-pink-200"></div>
+                    <p class="text-xs text-pink-400 font-light">หรือ</p>
+                    <div class="h-[1px] w-12 bg-pink-200"></div>
+                </div>
+
+                <!-- ปุ่มเข้ากลุ่ม LINE -->
+                <a href="https://line.me/ti/g/r6sZb7D2SH" target="_blank" class="flex items-center justify-center bg-[#06C755] hover:bg-[#05b34c] text-white py-3 px-5 rounded-xl font-medium transition-all transform hover:-translate-y-1 shadow-md text-sm md:text-base">
+                    <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 3.552 8.845 8.365 9.589.325.069.755.226.861.536.096.28.061.716.031.996l-.16 1.016c-.05.31-.237 1.157 1.011.631 1.25-.527 6.721-3.957 9.444-6.974C22.613 14.152 24 12.35 24 10.304z"/>
                     </svg>
-                    กดเพื่อเข้าร่วมกลุ่ม LINE
+                    กดเข้าร่วมกลุ่ม LINE
                 </a>
             </div>
 
-            <!-- ปุ่มกลับหน้าแรก (เผื่อต้องการกรอกข้อมูลของคนอื่น) -->
-            <button onclick="location.reload()" class="bg-gray-50 hover:bg-gray-100 text-emerald-600 py-3 px-8 rounded-xl font-medium transition-colors border border-gray-200 shadow-sm w-full">
+            <!-- ปุ่มกลับหน้าแรก -->
+            <button onclick="location.reload()" class="bg-white hover:bg-pink-50 text-pink-500 py-3 px-8 rounded-xl font-medium transition-colors border border-pink-200 shadow-sm w-full">
                 กลับไปหน้าแรก
             </button>
         </div>
@@ -287,7 +306,7 @@
         document.addEventListener('keyup', (e) => {
             if (e.key === 'PrintScreen' || e.keyCode === 44) {
                 navigator.clipboard.writeText(''); 
-                alert('ไม่อนุญาตให้แคปภาพหน้าจอ เพื่อรักษาความปลอดภัยของข้อมูลส่วนบุคคลครับ');
+                alert('ขออภัยครับ ไม่อนุญาตให้แคปภาพหน้าจอ เพื่อความปลอดภัยของข้อมูล');
             }
         });
 
@@ -309,14 +328,14 @@
             }
         }
 
-        // ฟังก์ชันจุดพลุกระดาษ (Confetti)
+        // ฟังก์ชันจุดพลุกระดาษสีพาสเทลน่ารักๆ (Confetti)
         function fireConfetti() {
             var duration = 3 * 1000;
             var end = Date.now() + duration;
 
             (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#10b981', '#fef08a', '#84cc16'] });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#10b981', '#fef08a', '#84cc16'] });
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#f472b6', '#c084fc', '#60a5fa', '#fef08a'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#f472b6', '#c084fc', '#60a5fa', '#fef08a'] });
 
                 if (Date.now() < end) { requestAnimationFrame(frame); }
             }());
@@ -360,7 +379,7 @@
                     // ซ่อนฟอร์มหลัก
                     document.getElementById('formContainer').classList.add('hidden');
                     
-                    // แสดงหน้าต่าง Success + ปุ่มเข้ากลุ่มไลน์
+                    // แสดงหน้าต่าง Success + QR Code + ปุ่ม LINE
                     const successDiv = document.getElementById('successMessage');
                     successDiv.classList.remove('hidden', 'scale-95', 'opacity-0');
                     successDiv.classList.add('scale-100', 'opacity-100');
