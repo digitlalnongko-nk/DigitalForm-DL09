@@ -2,7 +2,6 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <!-- ตั้งค่า Viewport ให้พอดีกับหน้าจอและป้องกันการซูมมั่วบนมือถือ -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ตรวจสอบข้อมูล - หลักสูตรการเข้าใจดิจิทัล รุ่นที่ 9</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -10,32 +9,27 @@
     <style>
         body {
             font-family: 'Prompt', sans-serif;
-            /* ป้องกันการคลุมดำคัดลอกข้อความ */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            /* สีพื้นหลังแบบไล่ระดับสดใส */
             background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             background-attachment: fixed;
         }
         
-        /* ป้องกันการสั่งพิมพ์ (Print) หรือ Save as PDF */
         @media print {
             body { display: none !important; }
         }
 
         .form-radio {
-            accent-color: #ec4899; /* เปลี่ยนสีตัวเลือกเป็นสีชมพู */
+            accent-color: #ec4899; 
         }
         
-        /* ซ่อนหน้าต่างตอนเริ่มต้น */
         .hidden-smooth {
             display: none;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
         }
-        /* แอนิเมชันโชว์ขึ้นมา */
         .show-smooth {
             display: block;
             opacity: 1;
@@ -46,7 +40,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* เอฟเฟกต์กระจกใส (Glassmorphism) */
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -62,13 +55,10 @@
 </head>
 <body class="min-h-screen p-4 md:p-8 flex items-center justify-center">
 
-    <!-- Container หลัก -->
     <div class="max-w-lg w-full">
         
-        <!-- แบบฟอร์ม -->
         <div id="formContainer" class="glass-card rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 border border-white">
             
-            <!-- Header โครงการแบบสีสันสดใส -->
             <div class="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-500 p-8 text-white text-center">
                 <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/30 shadow-lg">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -89,32 +79,54 @@
                 </div>
             </div>
 
-            <!-- คำอธิบายย่อย -->
             <div class="px-6 pt-6 pb-2 flex items-center border-b border-gray-100">
                 <div class="w-1.5 h-6 bg-gradient-to-b from-fuchsia-500 to-pink-500 rounded-full mr-3"></div>
                 <h2 class="text-xl font-medium text-gray-800">แบบฟอร์มตรวจสอบข้อมูล</h2>
             </div>
             
-            <!-- ฟอร์มกรอกข้อมูล -->
             <form id="dataForm" class="p-6 space-y-6">
                 
-                <!-- ข้อ 1 -->
+                <!-- ข้อ 1 (เปลี่ยนเป็นแบบเลือกชื่อ) -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1" for="original_name">1. ชื่อ-สกุล (ตามรายชื่อเดิม) <span class="text-pink-500">*</span></label>
-                    <input type="text" id="original_name" required class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-gray-50 hover:bg-white text-gray-800" placeholder="เช่น เด็กชายกตัญญู ชมพูพาน">
-                </div>
-
-                <!-- ระดับชั้น -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1" for="grade">ระดับชั้น <span class="text-pink-500">*</span></label>
-                    <select id="grade" required class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-gray-50 hover:bg-white text-gray-800">
-                        <option value="" disabled selected>เลือกระดับชั้น</option>
-                        <option value="ม.1">มัธยมศึกษาปีที่ 1</option>
-                        <option value="ม.2">มัธยมศึกษาปีที่ 2</option>
-                        <option value="ม.3">มัธยมศึกษาปีที่ 3</option>
-                        <option value="ม.4">มัธยมศึกษาปีที่ 4</option>
-                        <option value="ม.5">มัธยมศึกษาปีที่ 5</option>
-                        <option value="ม.6">มัธยมศึกษาปีที่ 6</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-2" for="student_select">1. เลือกรายชื่อของคุณ <span class="text-pink-500">*</span></label>
+                    <select id="student_select" required class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-gray-50 hover:bg-white text-gray-800 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_12px] bg-no-repeat bg-[position:right_1rem_center]">
+                        <option value="" disabled selected>-- กดเพื่อเลือกชื่อของคุณ --</option>
+                        
+                        <optgroup label="ชั้นมัธยมศึกษาปีที่ 1 (ม.1)">
+                            <option value="เด็กชายณัฐดนัย ดวงจำปา" data-grade="ม.1">เด็กชายณัฐดนัย ดวงจำปา</option>
+                            <option value="เด็กชายกตัญญู ชมพูพาน" data-grade="ม.1">เด็กชายกตัญญู ชมพูพาน</option>
+                            <option value="เด็กหญิงพิมพ์ชนก วงชารี" data-grade="ม.1">เด็กหญิงพิมพ์ชนก วงชารี</option>
+                        </optgroup>
+                        
+                        <optgroup label="ชั้นมัธยมศึกษาปีที่ 2 (ม.2)">
+                            <option value="เด็กหญิงปลายปรีญา แสงดี" data-grade="ม.2">เด็กหญิงปลายปรีญา แสงดี</option>
+                            <option value="เด็กชายสิทธิศักดิ์ เสนาวัน" data-grade="ม.2">เด็กชายสิทธิศักดิ์ เสนาวัน</option>
+                            <option value="เด็กชายวงศกร นามวิเศษ" data-grade="ม.2">เด็กชายวงศกร นามวิเศษ</option>
+                        </optgroup>
+                        
+                        <optgroup label="ชั้นมัธยมศึกษาปีที่ 3 (ม.3)">
+                            <option value="เด็กหญิงกวินทรา สร้างนอก" data-grade="ม.3">เด็กหญิงกวินทรา สร้างนอก</option>
+                            <option value="เด็กหญิงฝนทิพย์ ทึกทา" data-grade="ม.3">เด็กหญิงฝนทิพย์ ทึกทา</option>
+                            <option value="เด็กหญิงวรรณภา กุดเงิน" data-grade="ม.3">เด็กหญิงวรรณภา กุดเงิน</option>
+                        </optgroup>
+                        
+                        <optgroup label="ชั้นมัธยมศึกษาปีที่ 4 (ม.4)">
+                            <option value="นางสาวศุภิสรา พรหนอง" data-grade="ม.4">นางสาวศุภิสรา พรหนอง</option>
+                            <option value="นายมรุต ขันตรี" data-grade="ม.4">นายมรุต ขันตรี</option>
+                            <option value="นางสาวนุจรี มาไส" data-grade="ม.4">นางสาวนุจรี มาไส</option>
+                        </optgroup>
+                        
+                        <optgroup label="ชั้นมัธยมศึกษาปีที่ 5 (ม.5)">
+                            <option value="นางสาวณัฐริดา งามยิ่ง" data-grade="ม.5">นางสาวณัฐริดา งามยิ่ง</option>
+                            <option value="นายแทนคุณ สุวรรณภักดี" data-grade="ม.5">นายแทนคุณ สุวรรณภักดี</option>
+                            <option value="นายกวินท์ วิเศษทักษิณ" data-grade="ม.5">นายกวินท์ วิเศษทักษิณ</option>
+                        </optgroup>
+                        
+                        <optgroup label="ชั้นมัธยมศึกษาปีที่ 6 (ม.6)">
+                            <option value="นายณัฐนันท์ ดวงจำปา" data-grade="ม.6">นายณัฐนันท์ ดวงจำปา</option>
+                            <option value="นางสาวลัดดาวัลย์ ไธสง" data-grade="ม.6">นางสาวลัดดาวัลย์ ไธสง</option>
+                            <option value="นางสาวศิริวรรณ หาวอ" data-grade="ม.6">นางสาวศิริวรรณ หาวอ</option>
+                        </optgroup>
                     </select>
                 </div>
 
@@ -124,11 +136,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-violet-400 hover:bg-violet-50 transition-all">
                             <input type="radio" name="name_status" value="ถูกต้อง" class="w-4 h-4 text-violet-500 form-radio" required onchange="toggleCorrectName(false)">
-                            <span class="ml-3 text-sm text-gray-700 font-medium">ชื่อ-สกุลถูกต้องแล้ว</span>
+                            <span class="ml-3 text-sm text-gray-700 font-medium">ชื่อ-สกุลในระบบถูกต้องแล้ว</span>
                         </label>
                         <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-pink-400 hover:bg-pink-50 transition-all">
                             <input type="radio" name="name_status" value="มีจุดต้องแก้ไข" class="w-4 h-4 text-pink-500 form-radio" required onchange="toggleCorrectName(true)">
-                            <span class="ml-3 text-sm text-gray-700 font-medium">มีจุดที่ต้องแก้ไข</span>
+                            <span class="ml-3 text-sm text-gray-700 font-medium">มีจุดที่ต้องแก้ไขพิมพ์ใหม่</span>
                         </label>
                     </div>
                 </div>
@@ -170,7 +182,6 @@
                 <div class="pt-6 pb-2">
                     <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white font-medium py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex justify-center items-center">
                         <span id="btnText" class="text-lg">ยืนยันการบันทึกข้อมูล</span>
-                        <!-- ไอคอนโหลด (ซ่อนอยู่) -->
                         <svg id="loadingSpinner" class="animate-spin h-6 w-6 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -180,7 +191,7 @@
             </form>
         </div>
 
-        <!-- หน้าต่างแจ้งเตือนสำเร็จ (แสดงหลังส่งข้อมูล) -->
+        <!-- หน้าต่างแจ้งเตือนสำเร็จ -->
         <div id="successMessage" class="hidden glass-card rounded-3xl shadow-2xl p-10 text-center border border-white transition-all">
             <div class="w-20 h-20 bg-gradient-to-tr from-emerald-400 to-teal-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-200">
                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -190,39 +201,26 @@
             <h3 class="text-2xl font-semibold text-gray-800 mb-3 drop-shadow-sm">บันทึกข้อมูลสำเร็จ!</h3>
             <p class="text-gray-500 mb-8">ขอบคุณที่ยืนยันและตรวจสอบข้อมูลสำหรับเข้าร่วมโครงการครับ</p>
             <button onclick="location.reload()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 px-6 rounded-lg font-medium transition-colors border border-gray-200 shadow-sm">
-                กรอกข้อมูลเพิ่ม
+                กลับไปหน้าแรก
             </button>
         </div>
 
     </div>
 
     <script>
-        // ==========================================
-        // 1. ระบบป้องกันการคัดลอกและการแคปหน้าจอ
-        // ==========================================
-        
-        // ปิดการคลิกขวา
+        // ป้องกันการคลิกขวาและแคปหน้าจอ
         document.addEventListener('contextmenu', event => event.preventDefault());
-
-        // ป้องกันการลากข้อความและรูปภาพ
         document.addEventListener('dragstart', event => event.preventDefault());
-
-        // ดักจับการกดปุ่ม Print Screen บนนคีย์บอร์ด (PC/Laptop)
         document.addEventListener('keyup', (e) => {
             if (e.key === 'PrintScreen' || e.keyCode === 44) {
-                navigator.clipboard.writeText(''); // เคลียร์คลิปบอร์ดให้ว่างเปล่า
+                navigator.clipboard.writeText(''); 
                 alert('ไม่อนุญาตให้แคปภาพหน้าจอ เพื่อรักษาความปลอดภัยของข้อมูลส่วนบุคคล');
             }
         });
 
-        // ==========================================
-        // 2. ระบบการทำงานของฟอร์ม (ตามโค้ดเดิมของคุณ)
-        // ==========================================
-
         function toggleCorrectName(show) {
             const div = document.getElementById('correctedNameDiv');
             const input = document.getElementById('corrected_name');
-            // เพื่อให้สามารถพิมพ์ข้อความในกล่องที่โดนป้องกันการคลุมดำได้
             input.style.pointerEvents = "auto";
             
             if (show) {
@@ -237,7 +235,6 @@
             }
         }
 
-        // URL เดิมของคุณ
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyoih1w2x0vewTbd6bbeQhGAzD8vJztBvrLaM9oquem4z6F-E-tXgyjnWMp5Sr_6zZ9/exec';
 
         document.getElementById('dataForm').addEventListener('submit', function(e) {
@@ -251,9 +248,13 @@
             loadingSpinner.classList.remove('hidden');
             submitBtn.disabled = true;
 
+            // ดึงค่า ชื่อ และ ระดับชั้น จาก Dropdown ตัวเดียวกัน
+            const studentSelect = document.getElementById('student_select');
+            const selectedOption = studentSelect.options[studentSelect.selectedIndex];
+
             const formData = {
-                originalName: document.getElementById('original_name').value,
-                grade: document.getElementById('grade').value,
+                originalName: selectedOption.value, // ได้ชื่อ
+                grade: selectedOption.dataset.grade, // ได้ระดับชั้น (ดึงจาก data-grade ใน option)
                 nameStatus: document.querySelector('input[name="name_status"]:checked').value,
                 correctedName: document.getElementById('corrected_name').value || '-',
                 phone: document.getElementById('phone').value,
@@ -274,7 +275,7 @@
                     document.getElementById('formContainer').classList.add('hidden');
                     document.getElementById('successMessage').classList.remove('hidden');
                 } else if (data.status === 'duplicate') {
-                    alert('ข้อมูลซ้ำ! หมายเลขหรือชื่อและระดับชั้นนี้ ได้ทำการตรวจสอบข้อมูลไปแล้วครับ');
+                    alert('ข้อมูลซ้ำ! รายชื่อนี้ ได้ทำการตรวจสอบและบันทึกข้อมูลไปแล้วครับ');
                     resetButton();
                 } else {
                     alert('เกิดข้อผิดพลาด: ' + data.message);
