@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <!-- ตั้งค่า Viewport ให้พอดีกับหน้าจอและป้องกันการซูมมั่วบนมือถือ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ตรวจสอบข้อมูล - หลักสูตรการเข้าใจดิจิทัล รุ่นที่ 9</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            /* ป้องกันการคลุมดำคัดลอกข้อความ */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            /* สีพื้นหลังแบบไล่ระดับสดใส */
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            background-attachment: fixed;
+        }
+        
+        /* ป้องกันการสั่งพิมพ์ (Print) หรือ Save as PDF */
+        @media print {
+            body { display: none !important; }
+        }
+
+        .form-radio {
+            accent-color: #ec4899; /* เปลี่ยนสีตัวเลือกเป็นสีชมพู */
+        }
+        
+        /* ซ่อนหน้าต่างตอนเริ่มต้น */
+        .hidden-smooth {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        /* แอนิเมชันโชว์ขึ้นมา */
+        .show-smooth {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* เอฟเฟกต์กระจกใส (Glassmorphism) */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3);
+            border-color: #ec4899;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex items-center justify-center">
+
+    <!-- Container หลัก -->
+    <div class="max-w-lg w-full">
+        
+        <!-- แบบฟอร์ม -->
+        <div id="formContainer" class="glass-card rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 border border-white">
+            
+            <!-- Header โครงการแบบสีสันสดใส -->
+            <div class="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-500 p-8 text-white text-center">
+                <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/30 shadow-lg">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-semibold mb-2 drop-shadow-md">โครงการ หลักสูตรการเข้าใจดิจิทัล</h1>
+                <p class="text-sm text-pink-100 font-light mb-4">รุ่นที่ 9 สำหรับเด็กและเยาวชน (อายุ 9 - 17 ปี)</p>
+                <div class="bg-black/20 rounded-xl p-3 inline-block text-xs text-left shadow-inner border border-white/10 backdrop-blur-sm w-full">
+                    <div class="flex items-center mb-2">
+                        <div class="bg-white/20 p-1.5 rounded-lg mr-3"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>
+                        <span>วันที่ 9 - 11 พฤศจิกายน 2569</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="bg-white/20 p-1.5 rounded-lg mr-3"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></div>
+                        <span>โรงเรียนหนองโกวิชาประสิทธิ์พิทยาคม</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- คำอธิบายย่อย -->
+            <div class="px-6 pt-6 pb-2 flex items-center border-b border-gray-100">
+                <div class="w-1.5 h-6 bg-gradient-to-b from-fuchsia-500 to-pink-500 rounded-full mr-3"></div>
+                <h2 class="text-xl font-medium text-gray-800">แบบฟอร์มตรวจสอบข้อมูล</h2>
+            </div>
+            
+            <!-- ฟอร์มกรอกข้อมูล -->
+            <form id="dataForm" class="p-6 space-y-6">
+                
+                <!-- ข้อ 1 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="original_name">1. ชื่อ-สกุล (ตามรายชื่อเดิม) <span class="text-pink-500">*</span></label>
+                    <input type="text" id="original_name" required class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-gray-50 hover:bg-white text-gray-800" placeholder="เช่น เด็กชายกตัญญู ชมพูพาน">
+                </div>
+
+                <!-- ระดับชั้น -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="grade">ระดับชั้น <span class="text-pink-500">*</span></label>
+                    <select id="grade" required class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-gray-50 hover:bg-white text-gray-800">
+                        <option value="" disabled selected>เลือกระดับชั้น</option>
+                        <option value="ม.1">มัธยมศึกษาปีที่ 1</option>
+                        <option value="ม.2">มัธยมศึกษาปีที่ 2</option>
+                        <option value="ม.3">มัธยมศึกษาปีที่ 3</option>
+                        <option value="ม.4">มัธยมศึกษาปีที่ 4</option>
+                        <option value="ม.5">มัธยมศึกษาปีที่ 5</option>
+                        <option value="ม.6">มัธยมศึกษาปีที่ 6</option>
+                    </select>
+                </div>
+
+                <!-- ข้อ 2 -->
+                <div class="border-t border-gray-100 pt-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">2. ตรวจสอบชื่อ-สกุลของคุณ</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-violet-400 hover:bg-violet-50 transition-all">
+                            <input type="radio" name="name_status" value="ถูกต้อง" class="w-4 h-4 text-violet-500 form-radio" required onchange="toggleCorrectName(false)">
+                            <span class="ml-3 text-sm text-gray-700 font-medium">ชื่อ-สกุลถูกต้องแล้ว</span>
+                        </label>
+                        <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-pink-400 hover:bg-pink-50 transition-all">
+                            <input type="radio" name="name_status" value="มีจุดต้องแก้ไข" class="w-4 h-4 text-pink-500 form-radio" required onchange="toggleCorrectName(true)">
+                            <span class="ml-3 text-sm text-gray-700 font-medium">มีจุดที่ต้องแก้ไข</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ข้อ 3 (แสดงเมื่อเลือกมีจุดต้องแก้ไข) -->
+                <div id="correctedNameDiv" class="hidden-smooth bg-gradient-to-r from-pink-50 to-rose-50 p-5 rounded-xl border border-pink-100 shadow-inner">
+                    <label class="block text-sm font-medium text-pink-700 mb-2" for="corrected_name">พิมพ์ ชื่อ-สกุล (ที่ถูกต้อง) ลงในช่องนี้</label>
+                    <input type="text" id="corrected_name" class="w-full px-4 py-3 border border-pink-200 rounded-xl focus:ring-2 focus:ring-pink-400 outline-none bg-white text-gray-800" placeholder="ระบุชื่อและนามสกุลที่ถูกต้อง">
+                </div>
+
+                <!-- ข้อมูลติดต่อ -->
+                <div class="border-t border-gray-100 pt-5 space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">เบอร์โทรศัพท์ (ปัจจุบัน) <span class="text-pink-500">*</span></label>
+                        <input type="tel" id="phone" required pattern="[0-9]{9,10}" class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-gray-50 hover:bg-white text-gray-800" placeholder="เช่น 0812345678">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="email">อีเมล (ปัจจุบัน)</label>
+                        <input type="email" id="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl transition-all bg-gray-50 hover:bg-white text-gray-800" placeholder="เช่น example@gmail.com (ถ้ามี)">
+                    </div>
+                </div>
+
+                <!-- สถานะ ThaID -->
+                <div class="border-t border-gray-100 pt-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">สถานะการติดตั้งแอปพลิเคชัน ThaID <span class="text-pink-500">*</span></label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-400 hover:bg-emerald-50 transition-all">
+                            <input type="radio" name="thaid_status" value="ติดตั้งแล้ว" class="w-4 h-4 text-emerald-500 form-radio" required>
+                            <span class="ml-3 text-sm text-gray-700 font-medium">ติดตั้งและลงทะเบียนแล้ว</span>
+                        </label>
+                        <label class="flex items-center p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition-all">
+                            <input type="radio" name="thaid_status" value="ยังไม่ติดตั้ง" class="w-4 h-4 text-orange-500 form-radio" required>
+                            <span class="ml-3 text-sm text-gray-700 font-medium">ยังไม่ติดตั้ง</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ปุ่มส่งข้อมูล -->
+                <div class="pt-6 pb-2">
+                    <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white font-medium py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex justify-center items-center">
+                        <span id="btnText" class="text-lg">ยืนยันการบันทึกข้อมูล</span>
+                        <!-- ไอคอนโหลด (ซ่อนอยู่) -->
+                        <svg id="loadingSpinner" class="animate-spin h-6 w-6 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- หน้าต่างแจ้งเตือนสำเร็จ (แสดงหลังส่งข้อมูล) -->
+        <div id="successMessage" class="hidden glass-card rounded-3xl shadow-2xl p-10 text-center border border-white transition-all">
+            <div class="w-20 h-20 bg-gradient-to-tr from-emerald-400 to-teal-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-200">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-semibold text-gray-800 mb-3 drop-shadow-sm">บันทึกข้อมูลสำเร็จ!</h3>
+            <p class="text-gray-500 mb-8">ขอบคุณที่ยืนยันและตรวจสอบข้อมูลสำหรับเข้าร่วมโครงการครับ</p>
+            <button onclick="location.reload()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 px-6 rounded-lg font-medium transition-colors border border-gray-200 shadow-sm">
+                กรอกข้อมูลเพิ่ม
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. ระบบป้องกันการคัดลอกและการแคปหน้าจอ
+        // ==========================================
+        
+        // ปิดการคลิกขวา
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // ป้องกันการลากข้อความและรูปภาพ
+        document.addEventListener('dragstart', event => event.preventDefault());
+
+        // ดักจับการกดปุ่ม Print Screen บนนคีย์บอร์ด (PC/Laptop)
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                navigator.clipboard.writeText(''); // เคลียร์คลิปบอร์ดให้ว่างเปล่า
+                alert('ไม่อนุญาตให้แคปภาพหน้าจอ เพื่อรักษาความปลอดภัยของข้อมูลส่วนบุคคล');
+            }
+        });
+
+        // ==========================================
+        // 2. ระบบการทำงานของฟอร์ม (ตามโค้ดเดิมของคุณ)
+        // ==========================================
+
+        function toggleCorrectName(show) {
+            const div = document.getElementById('correctedNameDiv');
+            const input = document.getElementById('corrected_name');
+            // เพื่อให้สามารถพิมพ์ข้อความในกล่องที่โดนป้องกันการคลุมดำได้
+            input.style.pointerEvents = "auto";
+            
+            if (show) {
+                div.classList.remove('hidden-smooth');
+                div.classList.add('show-smooth');
+                input.required = true;
+            } else {
+                div.classList.remove('show-smooth');
+                div.classList.add('hidden-smooth');
+                input.required = false;
+                input.value = ''; 
+            }
+        }
+
+        // URL เดิมของคุณ
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyoih1w2x0vewTbd6bbeQhGAzD8vJztBvrLaM9oquem4z6F-E-tXgyjnWMp5Sr_6zZ9/exec';
+
+        document.getElementById('dataForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            btnText.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            submitBtn.disabled = true;
+
+            const formData = {
+                originalName: document.getElementById('original_name').value,
+                grade: document.getElementById('grade').value,
+                nameStatus: document.querySelector('input[name="name_status"]:checked').value,
+                correctedName: document.getElementById('corrected_name').value || '-',
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value || '-',
+                thaidStatus: document.querySelector('input[name="thaid_status"]:checked').value
+            };
+
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('formContainer').classList.add('hidden');
+                    document.getElementById('successMessage').classList.remove('hidden');
+                } else if (data.status === 'duplicate') {
+                    alert('ข้อมูลซ้ำ! หมายเลขหรือชื่อและระดับชั้นนี้ ได้ทำการตรวจสอบข้อมูลไปแล้วครับ');
+                    resetButton();
+                } else {
+                    alert('เกิดข้อผิดพลาด: ' + data.message);
+                    resetButton();
+                }
+            })
+            .catch(error => {
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
+                console.error('Error:', error);
+                resetButton();
+            });
+
+            function resetButton() {
+                btnText.classList.remove('hidden');
+                loadingSpinner.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
