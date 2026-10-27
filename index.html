@@ -174,11 +174,11 @@
             <div class="bg-red-50 p-4 rounded-xl text-left text-xs text-red-700 mb-6 space-y-2 border border-red-100">
                 <p>⚠️ หากระบบตรวจพบการละเมิด:</p>
                 <ul class="list-disc pl-5">
-                    <li>ครั้งที่ 1: แจ้งเตือนและเตะออกจากระบบ</li>
-                    <li>ครั้งที่ 2: ระงับการใช้งาน 1 นาที</li>
-                    <li>ครั้งที่ 3: ระงับการใช้งาน 3 นาที</li>
-                    <li>ครั้งที่ 4: ระงับการใช้งาน 5 นาที</li>
-                    <li>ครั้งที่ 5+: ระงับการใช้งาน 30 นาที</li>
+                    <li>ครั้งที่ 1-3: แจ้งเตือนและเตะออกจากระบบ</li>
+                    <li>ครั้งที่ 4: ระงับการใช้งาน 1 นาที</li>
+                    <li>ครั้งที่ 5: ระงับการใช้งาน 3 นาที</li>
+                    <li>ครั้งที่ 6: ระงับการใช้งาน 5 นาที</li>
+                    <li>ครั้งที่ 7+: ระงับการใช้งาน 30 นาที</li>
                 </ul>
             </div>
             <button onclick="acceptTerms()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-lg">
@@ -603,7 +603,7 @@
             }, 1000);
         }
 
-        // ฟังก์ชันลงโทษเมื่อทำผิด (สลับแอป / แคปจอ)
+        // ฟังก์ชันลงโทษเมื่อทำผิด (เตือน 3 ครั้ง แบนครั้งที่ 4)
         function triggerViolation() {
             if (!hasAgreed || isPenalized || violationTriggered) return;
             violationTriggered = true; 
@@ -617,12 +617,15 @@
             localStorage.removeItem('dl_appeal_pending');
 
             let banMinutes = 0;
-            let msg = "แจ้งเตือนครั้งแรก: ระบบจะเตะคุณออกเพื่อความปลอดภัย";
+            let msg = "";
             
-            if (offenses === 2) { banMinutes = 1; msg = "ผิดกฎครั้งที่ 2: ระงับการใช้งาน 1 นาที"; }
-            else if (offenses === 3) { banMinutes = 3; msg = "ผิดกฎครั้งที่ 3: ระงับการใช้งาน 3 นาที"; }
-            else if (offenses === 4) { banMinutes = 5; msg = "ผิดกฎครั้งที่ 4: ระงับการใช้งาน 5 นาที"; }
-            else if (offenses >= 5) { banMinutes = 30; msg = "ผิดกฎร้ายแรง: ระงับการใช้งาน 30 นาที"; }
+            if (offenses === 1) { msg = "แจ้งเตือนครั้งที่ 1: ห้ามแคปหน้าจอหรือสลับแอป"; }
+            else if (offenses === 2) { msg = "แจ้งเตือนครั้งที่ 2: กรุณาทำรายการให้เสร็จโดยไม่สลับแอป"; }
+            else if (offenses === 3) { msg = "แจ้งเตือนครั้งสุดท้าย: หากทำผิดอีก ระบบจะระงับการใช้งานทันที"; }
+            else if (offenses === 4) { banMinutes = 1; msg = "ผิดกฎครั้งที่ 4: ระงับการใช้งาน 1 นาที"; }
+            else if (offenses === 5) { banMinutes = 3; msg = "ผิดกฎครั้งที่ 5: ระงับการใช้งาน 3 นาที"; }
+            else if (offenses === 6) { banMinutes = 5; msg = "ผิดกฎครั้งที่ 6: ระงับการใช้งาน 5 นาที"; }
+            else if (offenses >= 7) { banMinutes = 30; msg = "ผิดกฎร้ายแรง: ระงับการใช้งาน 30 นาที"; }
 
             if (banMinutes > 0) {
                 const banEndTime = new Date().getTime() + (banMinutes * 60 * 1000);
