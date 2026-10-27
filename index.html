@@ -55,7 +55,7 @@
             box-shadow: 0 15px 35px rgba(244, 114, 182, 0.15); 
         }
 
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.2);
             border-color: #f472b6;
@@ -73,10 +73,11 @@
             filter: blur(70px);
             opacity: 0.6;
             animation: floatBlob 10s infinite alternate ease-in-out;
+            transition: background 1s ease;
         }
-        .blob-1 { width: 350px; height: 350px; background: #fbcfe8; top: -5%; left: -10%; }
-        .blob-2 { width: 300px; height: 300px; background: #e9d5ff; bottom: -5%; right: -5%; animation-delay: -3s; }
-        .blob-3 { width: 250px; height: 250px; background: #bfdbfe; top: 45%; left: 55%; animation-delay: -5s; }
+        .blob-1 { width: 350px; height: 350px; top: -5%; left: -10%; }
+        .blob-2 { width: 300px; height: 300px; bottom: -5%; right: -5%; animation-delay: -3s; }
+        .blob-3 { width: 250px; height: 250px; top: 45%; left: 55%; animation-delay: -5s; }
         
         @keyframes floatBlob {
             0% { transform: translate(0, 0) scale(1); }
@@ -102,8 +103,8 @@
 
         /* สำหรับหน้าต่างบล็อก In-App Browser และบทลงโทษ */
         .penalty-modal-overlay {
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
         }
 
         .freeze-overlay {
@@ -129,7 +130,19 @@
         <div class="pastel-blob blob-3"></div>
     </div>
 
-    <!-- 0. หน้าต่างบล็อก In-App Browser (LINE / FB) -->
+    <!-- 0. ระบบปิดตามเวลา 00:00 - 05:59 -->
+    <div id="timeBlocker" class="absolute inset-0 z-[9999999] flex flex-col items-center justify-center bg-gray-900 p-6 hidden text-white text-center">
+        <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20 max-w-sm w-full shadow-2xl">
+            <svg class="w-16 h-16 mx-auto mb-4 text-yellow-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <h2 class="text-2xl font-bold mb-4">ปิดปรับปรุงประจำวัน</h2>
+            <p class="text-gray-300 text-sm leading-relaxed">
+                ระบบเปิดให้บริการในเวลา<br><span class="text-yellow-400 font-bold text-lg">06:00 - 23:59 น.</span><br><br>
+                ขณะนี้ระบบกำลังจัดเตรียมข้อมูลสำหรับวันใหม่ กรุณากลับมาทำรายการใหม่อีกครั้งในช่วงเวลาทำการครับ
+            </p>
+        </div>
+    </div>
+
+    <!-- 0.1 หน้าต่างบล็อก In-App Browser (LINE / FB) -->
     <div id="inAppBrowserBlocker" class="absolute inset-0 z-[999999] flex flex-col items-center justify-center bg-gray-900 p-6 hidden text-white text-center">
         <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20 max-w-sm w-full shadow-2xl">
             <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-blue-500/50">
@@ -174,19 +187,60 @@
         </div>
     </div>
 
-    <!-- 2. หน้าต่างระงับการใช้งาน (Penalty Screen) -->
-    <div id="penaltyScreen" class="absolute inset-0 z-50 flex items-center justify-center bg-gray-900 p-4 hidden">
-        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-t-8 border-red-600">
+    <!-- 2. หน้าต่างระงับการใช้งาน (Penalty Screen) พร้อมแสดงสถานะคำร้อง -->
+    <div id="penaltyScreen" class="absolute inset-0 z-40 flex items-center justify-center bg-gray-900 p-4 hidden">
+        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-t-8 border-red-600 relative overflow-hidden">
             <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
             </div>
             <h2 class="text-2xl font-bold text-gray-800 mb-2">ระงับการใช้งานชั่วคราว</h2>
             <p class="text-gray-600 text-sm mb-6">ระบบตรวจพบการพยายามแคปหน้าจอ สลับแอปนานเกินไป หรือออกจากหน้าระบบหลายครั้ง คุณถูกระงับการใช้งาน</p>
             
-            <div class="bg-gray-100 p-4 rounded-xl mb-6 border border-gray-200 shadow-inner">
-                <p class="text-gray-500 text-xs mb-1 uppercase tracking-wider font-semibold">ปลดล็อคในอีก</p>
+            <div class="bg-gray-100 p-4 rounded-xl mb-4 border border-gray-200 shadow-inner">
+                <p class="text-gray-500 text-xs mb-1 uppercase tracking-wider font-semibold">ปลดล็อคอัตโนมัติในอีก</p>
                 <p id="countdownTimer" class="text-4xl font-mono font-bold text-red-600">00:00</p>
             </div>
+
+            <!-- กล่องแจ้งสถานะคำร้อง (ซ่อนไว้ก่อน) -->
+            <div id="appealStatusContainer" class="bg-blue-50 p-3 rounded-xl mb-4 border border-blue-200 text-sm text-blue-700 hidden">
+                <p class="font-bold mb-1">สถานะคำร้องขอปลดแบน:</p>
+                <p id="appealStatusText" class="text-xs">รอการตรวจสอบจากเจ้าหน้าที่</p>
+            </div>
+
+            <button id="btnOpenAppeal" onclick="document.getElementById('contactAdminModal').classList.remove('hidden')" class="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white py-3.5 px-4 rounded-xl font-medium transition-colors w-full text-sm shadow-md">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                ยื่นเรื่องขอปลดแบน
+            </button>
+        </div>
+    </div>
+
+    <!-- 2.5 หน้าต่างฟอร์มยื่นคำร้อง (มีระบบ AI จำลอง) -->
+    <div id="contactAdminModal" class="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 hidden">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full border-t-8 border-blue-500">
+            <h3 class="text-xl font-bold text-gray-800 mb-1">ส่งคำร้องขอปลดแบน</h3>
+            <p id="aiQuotaText" class="text-xs text-blue-600 font-medium mb-4 bg-blue-50 p-2 rounded-lg border border-blue-100">
+                ✨ ระบบ AI จะอนุมัติคำร้องให้อัตโนมัติ<br>(สิทธิ์คงเหลือ: <span id="quotaCount" class="font-bold text-lg">3</span>/3 ครั้ง)
+            </p>
+            
+            <form id="adminContactForm" onsubmit="sendContactAdmin(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">ชื่อ-นามสกุล ของนักเรียน <span class="text-red-500">*</span></label>
+                        <input type="text" id="contactName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">เหตุผลที่ทำผิดกฎ <span class="text-red-500">*</span></label>
+                        <textarea id="contactMessage" required rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"></textarea>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-2 mt-6">
+                    <button type="button" onclick="document.getElementById('contactAdminModal').classList.add('hidden')" class="w-1/3 bg-gray-100 text-gray-600 py-2.5 rounded-xl text-sm font-medium">ยกเลิก</button>
+                    <button type="submit" id="btnContactSubmit" class="w-2/3 bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-xl text-sm font-medium transition-colors flex justify-center items-center">
+                        <span id="txtContactSubmit">ส่งคำร้อง</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -199,16 +253,13 @@
             <p id="freezeMessage" class="text-lg font-bold">ระบบกำลังบันทึกประวัติความผิด...</p>
         </div>
     </div>
-
-    <!-- Wrap Form หลักด้วย mainAppWrapper ซ่อนไว้จนกว่าจะกดยอมรับ -->
+    <!-- เนื้อหาฟอร์มหลัก -->
     <div id="mainAppWrapper" class="max-w-lg w-full relative z-10 hidden">
         
-        <!-- ======================= -->
-        <!-- FORM CONTAINER หลัก -->
-        <!-- ======================= -->
         <div id="formContainer" class="glass-card rounded-3xl overflow-hidden transition-all duration-500 relative">
             
-            <div class="bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-400 p-8 text-white text-center relative overflow-hidden">
+            <!-- Header ที่จะเปลี่ยนสีตามวันอัตโนมัติ -->
+            <div id="formHeader" class="p-8 text-white text-center relative overflow-hidden bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 transition-colors duration-1000">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-20 rounded-full -translate-y-12 translate-x-12"></div>
                 <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-20 rounded-full translate-y-10 -translate-x-8"></div>
                 
@@ -218,7 +269,7 @@
                     </svg>
                 </div>
                 <h1 class="text-2xl font-semibold mb-2 drop-shadow-md text-white">หลักสูตรการเข้าใจดิจิทัล</h1>
-                <p class="text-sm text-pink-50 font-light mb-5">รุ่นที่ 9 สำหรับเด็กและเยาวชน (อายุ 9 - 17 ปี)</p>
+                <p class="text-sm text-white/90 font-light mb-5">รุ่นที่ 9 สำหรับเด็กและเยาวชน (อายุ 9 - 17 ปี)</p>
                 
                 <div class="bg-white/20 rounded-2xl p-3 inline-block text-xs text-left shadow-inner border border-white/30 backdrop-blur-sm w-full font-medium">
                     <div class="flex items-center mb-2 text-white drop-shadow-sm">
@@ -424,9 +475,7 @@
                 กลับไปหน้าแรก
             </button>
         </div>
-
     </div>
-
     <script>
         // ==========================================
         // ระบบตรวจจับ ป้องกัน และลงโทษ (Security & Penalty System)
@@ -439,6 +488,24 @@
 
         let blurPenaltyTimer;
         const gracePeriod = 30000; // เวลาให้สลับแอป (30 วินาที)
+
+        // ระบบเปลี่ยนธีมสีตามวัน
+        function applyDayTheme() {
+            const day = new Date().getDay();
+            const themes = [
+                { from: 'from-red-400', via: 'via-rose-400', to: 'to-orange-400', b1: '#fecaca', b2: '#fca5a5', b3: '#fda4af' }, // 0 Sun (แดง)
+                { from: 'from-yellow-400', via: 'via-amber-400', to: 'to-orange-300', b1: '#fef08a', b2: '#fde047', b3: '#fcd34d' }, // 1 Mon (เหลือง)
+                { from: 'from-pink-400', via: 'via-purple-400', to: 'to-indigo-400', b1: '#fbcfe8', b2: '#e9d5ff', b3: '#bfdbfe' }, // 2 Tue (ชมพู)
+                { from: 'from-green-400', via: 'via-emerald-400', to: 'to-teal-400', b1: '#bbf7d0', b2: '#86efac', b3: '#a7f3d0' }, // 3 Wed (เขียว)
+                { from: 'from-orange-400', via: 'via-amber-500', to: 'to-yellow-500', b1: '#fed7aa', b2: '#fdba74', b3: '#fcd34d' }, // 4 Thu (ส้ม)
+                { from: 'from-blue-400', via: 'via-cyan-400', to: 'to-sky-400', b1: '#bfdbfe', b2: '#93c5fd', b3: '#a5f3fc' }, // 5 Fri (ฟ้า)
+                { from: 'from-purple-400', via: 'via-fuchsia-400', to: 'to-pink-400', b1: '#e9d5ff', b2: '#d8b4fe', b3: '#fbcfe8' }  // 6 Sat (ม่วง)
+            ];
+            document.querySelector('.blob-1').style.background = themes[day].b1;
+            document.querySelector('.blob-2').style.background = themes[day].b2;
+            document.querySelector('.blob-3').style.background = themes[day].b3;
+            document.getElementById('formHeader').className = `p-8 text-white text-center relative overflow-hidden bg-gradient-to-br ${themes[day].from} ${themes[day].via} ${themes[day].to} transition-colors duration-1000`;
+        }
 
         // 1. ตรวจสอบว่าเปิดผ่าน LINE / Facebook Browser หรือไม่
         function checkInAppBrowser() {
@@ -459,12 +526,21 @@
         }
 
         window.onload = function() {
+            // ระบบจำกัดเวลา 06:00 - 23:59
+            const currentHour = new Date().getHours();
+            if (currentHour < 6) {
+                document.getElementById('timeBlocker').classList.remove('hidden');
+                return; 
+            }
+
+            applyDayTheme();
             if(checkInAppBrowser()) return; 
             checkBanStatus();
         };
 
         function checkBanStatus() {
             const banUntil = localStorage.getItem('dl_ban_until');
+            const isAppealPending = localStorage.getItem('dl_appeal_pending') === 'true';
             const now = new Date().getTime();
 
             if (banUntil && now < parseInt(banUntil)) {
@@ -473,8 +549,20 @@
                 document.getElementById('mainAppWrapper').classList.add('hidden');
                 document.getElementById('penaltyScreen').classList.remove('hidden');
                 startCountdown(parseInt(banUntil));
+                
+                // อัปเดต UI คำร้อง
+                let appealCount = parseInt(localStorage.getItem('dl_appeal_count') || '0');
+                document.getElementById('quotaCount').innerText = 3 - appealCount;
+
+                if (isAppealPending) {
+                    document.getElementById('appealStatusContainer').classList.remove('hidden');
+                    document.getElementById('btnOpenAppeal').classList.add('opacity-50', 'cursor-not-allowed');
+                    document.getElementById('btnOpenAppeal').onclick = null;
+                    document.getElementById('btnOpenAppeal').innerHTML = "คำร้องถูกส่งแล้ว รอตรวจสอบ...";
+                }
             } else {
                 isPenalized = false;
+                localStorage.removeItem('dl_appeal_pending');
                 document.getElementById('penaltyScreen').classList.add('hidden');
                 
                 if(sessionStorage.getItem('dl_agreed') === 'true') {
@@ -504,6 +592,7 @@
                 if (distance < 0) {
                     clearInterval(penaltyInterval);
                     localStorage.removeItem('dl_ban_until'); 
+                    localStorage.removeItem('dl_appeal_pending'); 
                     location.reload(); 
                     return;
                 }
@@ -522,6 +611,10 @@
             let offenses = parseInt(localStorage.getItem('dl_offenses') || '0');
             offenses++;
             localStorage.setItem('dl_offenses', offenses);
+            
+            // รีเซ็ตโควต้าคำร้อง AI เมื่อโดนทำโทษครั้งใหม่
+            localStorage.setItem('dl_appeal_count', '0');
+            localStorage.removeItem('dl_appeal_pending');
 
             let banMinutes = 0;
             let msg = "แจ้งเตือนครั้งแรก: ระบบจะเตะคุณออกเพื่อความปลอดภัย";
@@ -801,6 +894,61 @@
             document.getElementById('btnText').classList.remove('hidden');
             document.getElementById('loadingSpinner').classList.add('hidden');
             submitBtn.disabled = false;
+        }
+
+        // ==========================================
+        // ระบบ AI ตรวจคำร้องอัตโนมัติ (โควต้า 3 ครั้ง)
+        // ==========================================
+        function sendContactAdmin(e) {
+            e.preventDefault();
+            
+            let appealCount = parseInt(localStorage.getItem('dl_appeal_count') || '0');
+            
+            if (appealCount < 3) {
+                // AI อนุมัติอัตโนมัติ
+                appealCount++;
+                localStorage.setItem('dl_appeal_count', appealCount);
+                
+                alert(`✨ ระบบ AI พิจารณาอนุมัติคำร้องของคุณแล้ว (ใช้สิทธิ์ครั้งที่ ${appealCount}/3)\n\nระบบจะทำการปลดล็อคให้คุณเข้าใช้งานได้ทันที กรุณาระมัดระวังการใช้งานครับ`);
+                
+                localStorage.removeItem('dl_ban_until');
+                location.reload();
+            } else {
+                // สิทธิ์หมด ส่งเรื่องให้ Admin แทน
+                const btn = document.getElementById('btnContactSubmit');
+                const txt = document.getElementById('txtContactSubmit');
+                
+                btn.disabled = true;
+                txt.innerText = "กำลังส่งข้อมูล...";
+
+                const contactData = {
+                    type: "contact_admin",
+                    name: document.getElementById('contactName').value,
+                    message: document.getElementById('contactMessage').value
+                };
+
+                fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(contactData)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert("⚠️ สิทธิ์ปลดแบนอัตโนมัติของคุณหมดแล้ว (เกิน 3 ครั้ง)\n\nระบบได้ส่งคำร้องของคุณไปยังอีเมลเจ้าหน้าที่แล้ว โปรดรอการตรวจสอบครับ");
+                    
+                    localStorage.setItem('dl_appeal_pending', 'true');
+                    document.getElementById('contactAdminModal').classList.add('hidden');
+                    checkBanStatus(); // อัปเดตหน้า UI เป็นโหมดรอตรวจสอบ
+                    
+                    btn.disabled = false;
+                    txt.innerText = "ส่งคำร้อง";
+                })
+                .catch(error => {
+                    alert("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง");
+                    btn.disabled = false;
+                    txt.innerText = "ส่งคำร้อง";
+                });
+            }
         }
     </script>
 </body>
