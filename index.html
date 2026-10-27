@@ -2,25 +2,16 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>ตรวจสอบข้อมูล - หลักสูตรสมรรถนะด้านการใช้ดิจิทัล Digital Literacy  รุ่นที่ 9 (DL-09) </title>
     <!-- ========================================== -->
     <!-- Meta Tags สำหรับการแชร์ลง LINE และ Facebook -->
     <!-- ========================================== -->
-    <!-- ชื่อหัวข้อที่จะแสดงตอนแชร์ -->
     <meta property="og:title" content="ยืนยันข้อมูล - หลักสูตรสมรรถนะด้านการใช้ดิจิทัล Digital Literacy  รุ่นที่ 9 (DL-09) ">
-    
-    <!-- คำอธิบายย่อยใต้หัวข้อ -->
     <meta property="og:description" content="ระบบตรวจสอบรายชื่อและยืนยันการเข้าร่วมโครงการ สำหรับเด็กและเยาวชน วันที่ 9-11 พ.ย. 69 ณ รร.หนองโกวิชาประสิทธิ์พิทยาคม">
-    
-    <!-- ลิงก์รูปภาพปก (ใช้ลิงก์ตรงจาก Postimages) -->
     <meta property="og:image" content="https://i.postimg.cc/13Q4PvBy/cover.jpg">
-    
-    <!-- ลิงก์เว็บไซต์ของคุณ -->
     <meta property="og:url" content="https://digitalform-dl09.vercel.app/">
     <meta property="og:type" content="website">
-    
-    <!-- สำหรับ Twitter (X) เผื่อแชร์ -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="ยืนยันข้อมูล - หลักสูตรการเข้าใจดิจิทัล รุ่นที่ 9">
     <meta name="twitter:description" content="ระบบตรวจสอบรายชื่อและยืนยันการเข้าร่วมโครงการ สำหรับเด็กและเยาวชน">
@@ -37,8 +28,11 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            touch-action: pan-x pan-y;
+            -webkit-text-size-adjust: 100%;
             background-color: #fff0f5; 
             overflow-x: hidden;
+            transition: filter 0.2s ease;
         }
         
         @media print { body { display: none !important; } }
@@ -99,6 +93,32 @@
             box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2) !important;
             background-color: #fef2f2 !important;
         }
+
+        /* สำหรับเบลอหน้าจอเมื่อพยายามสลับแอป */
+        .secure-blur {
+            filter: blur(15px) grayscale(100%);
+            pointer-events: none;
+        }
+
+        /* สำหรับหน้าต่างบล็อก In-App Browser และบทลงโทษ */
+        .penalty-modal-overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .freeze-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(220, 38, 38, 0.98);
+            z-index: 99998;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8 flex items-center justify-center relative">
@@ -109,7 +129,79 @@
         <div class="pastel-blob blob-3"></div>
     </div>
 
-    <div class="max-w-lg w-full relative z-10">
+    <!-- 0. หน้าต่างบล็อก In-App Browser (LINE / FB) -->
+    <div id="inAppBrowserBlocker" class="absolute inset-0 z-[999999] flex flex-col items-center justify-center bg-gray-900 p-6 hidden text-white text-center">
+        <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20 max-w-sm w-full shadow-2xl">
+            <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-blue-500/50">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-4">ระบบความปลอดภัย</h2>
+            <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                เพื่อป้องกันข้อมูลส่วนบุคคลรั่วไหล<br>ไม่อนุญาตให้กรอกข้อมูลผ่านแอป LINE โดยตรง<br><br>
+                กรุณากดปุ่ม <span class="bg-gray-800 px-2 py-1 rounded text-white font-bold border border-gray-600">⋮</span> (3 จุด) มุมขวาบน<br>
+                แล้วเลือก <span class="text-blue-400 font-bold">"เปิดในเบราว์เซอร์เริ่มต้น"</span><br>
+                <span class="text-xs text-gray-400">(Open in external browser)</span>
+            </p>
+            <div class="animate-bounce mt-4">
+                <svg class="w-6 h-6 mx-auto text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. หน้าต่างข้อตกลง (เปิดมาเจอเลย) -->
+    <div id="agreementScreen" class="absolute inset-0 z-50 flex items-center justify-center penalty-modal-overlay p-4 hidden">
+        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-t-8 border-pink-500 transform transition-all">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-3">นโยบายความปลอดภัยส่วนบุคคล (PDPA)</h2>
+            <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                เพื่อปกป้องข้อมูลของท่าน <span class="text-red-500 font-bold">ไม่อนุญาตให้แคปหน้าจอ หรือปัดสลับแอปพลิเคชันเกินเวลาที่กำหนด (30 วินาที)</span> หากท่านต้องการดูข้อมูลเพิ่มเติม กรุณากลับมาที่หน้านี้ให้ทันเวลา
+            </p>
+            <div class="bg-red-50 p-4 rounded-xl text-left text-xs text-red-700 mb-6 space-y-2 border border-red-100">
+                <p>⚠️ หากระบบตรวจพบการละเมิด:</p>
+                <ul class="list-disc pl-5">
+                    <li>ครั้งที่ 1: แจ้งเตือนและเตะออกจากระบบ</li>
+                    <li>ครั้งที่ 2: ระงับการใช้งาน 1 นาที</li>
+                    <li>ครั้งที่ 3: ระงับการใช้งาน 3 นาที</li>
+                    <li>ครั้งที่ 4: ระงับการใช้งาน 5 นาที</li>
+                    <li>ครั้งที่ 5+: ระงับการใช้งาน 30 นาที</li>
+                </ul>
+            </div>
+            <button onclick="acceptTerms()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-lg">
+                รับทราบและยอมรับเงื่อนไข
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. หน้าต่างระงับการใช้งาน (Penalty Screen) -->
+    <div id="penaltyScreen" class="absolute inset-0 z-50 flex items-center justify-center bg-gray-900 p-4 hidden">
+        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-t-8 border-red-600">
+            <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">ระงับการใช้งานชั่วคราว</h2>
+            <p class="text-gray-600 text-sm mb-6">ระบบตรวจพบการพยายามแคปหน้าจอ สลับแอปนานเกินไป หรือออกจากหน้าระบบหลายครั้ง คุณถูกระงับการใช้งาน</p>
+            
+            <div class="bg-gray-100 p-4 rounded-xl mb-6 border border-gray-200 shadow-inner">
+                <p class="text-gray-500 text-xs mb-1 uppercase tracking-wider font-semibold">ปลดล็อคในอีก</p>
+                <p id="countdownTimer" class="text-4xl font-mono font-bold text-red-600">00:00</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. หน้าต่างแช่แข็งเมื่อจับได้สดๆ (Freeze Screen) -->
+    <div id="freezeScreen" class="freeze-overlay hidden">
+        <svg class="w-24 h-24 mb-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <h1 class="text-4xl font-bold mb-4">ตรวจพบการละเมิด!</h1>
+        <p class="text-xl mb-2 text-red-100">ไม่อนุญาตให้แคปหน้าจอ หรือปัดสลับแอปพลิเคชัน</p>
+        <div class="bg-black/20 p-4 rounded-lg mt-6 border border-white/30 backdrop-blur-sm">
+            <p id="freezeMessage" class="text-lg font-bold">ระบบกำลังบันทึกประวัติความผิด...</p>
+        </div>
+    </div>
+
+    <!-- Wrap Form หลักด้วย mainAppWrapper ซ่อนไว้จนกว่าจะกดยอมรับ -->
+    <div id="mainAppWrapper" class="max-w-lg w-full relative z-10 hidden">
         
         <!-- ======================= -->
         <!-- FORM CONTAINER หลัก -->
@@ -336,16 +428,176 @@
     </div>
 
     <script>
-        document.addEventListener('contextmenu', event => event.preventDefault());
-        document.addEventListener('dragstart', event => event.preventDefault());
+        // ==========================================
+        // ระบบตรวจจับ ป้องกัน และลงโทษ (Security & Penalty System)
+        // ==========================================
+        
+        let hasAgreed = false;
+        let isPenalized = false;
+        let penaltyInterval;
+        let violationTriggered = false; 
+
+        let blurPenaltyTimer;
+        const gracePeriod = 30000; // เวลาให้สลับแอป (30 วินาที)
+
+        // 1. ตรวจสอบว่าเปิดผ่าน LINE / Facebook Browser หรือไม่
+        function checkInAppBrowser() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            if (ua.indexOf("Line") > -1 || ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1) {
+                // บังคับเตะออกไป Browser นอก
+                if (ua.indexOf("Line") > -1 && window.location.search.indexOf("openExternalBrowser=1") === -1) {
+                    const separator = window.location.href.includes('?') ? '&' : '?';
+                    window.location.href = window.location.href + separator + "openExternalBrowser=1";
+                }
+                
+                // โชว์หน้าจอบล็อกดำทึบ 
+                document.getElementById('inAppBrowserBlocker').classList.remove('hidden');
+                document.getElementById('inAppBrowserBlocker').style.display = 'flex';
+                return true;
+            }
+            return false;
+        }
+
+        window.onload = function() {
+            if(checkInAppBrowser()) return; 
+            checkBanStatus();
+        };
+
+        function checkBanStatus() {
+            const banUntil = localStorage.getItem('dl_ban_until');
+            const now = new Date().getTime();
+
+            if (banUntil && now < parseInt(banUntil)) {
+                isPenalized = true;
+                document.getElementById('agreementScreen').classList.add('hidden');
+                document.getElementById('mainAppWrapper').classList.add('hidden');
+                document.getElementById('penaltyScreen').classList.remove('hidden');
+                startCountdown(parseInt(banUntil));
+            } else {
+                isPenalized = false;
+                document.getElementById('penaltyScreen').classList.add('hidden');
+                
+                if(sessionStorage.getItem('dl_agreed') === 'true') {
+                    hasAgreed = true;
+                    document.getElementById('mainAppWrapper').classList.remove('hidden');
+                } else {
+                    document.getElementById('agreementScreen').classList.remove('hidden');
+                }
+            }
+        }
+
+        function acceptTerms() {
+            sessionStorage.setItem('dl_agreed', 'true');
+            hasAgreed = true;
+            document.getElementById('agreementScreen').classList.add('hidden');
+            document.getElementById('mainAppWrapper').classList.remove('hidden');
+        }
+
+        function startCountdown(endTime) {
+            clearInterval(penaltyInterval);
+            const display = document.getElementById('countdownTimer');
+            
+            penaltyInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+
+                if (distance < 0) {
+                    clearInterval(penaltyInterval);
+                    localStorage.removeItem('dl_ban_until'); 
+                    location.reload(); 
+                    return;
+                }
+
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                display.innerText = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            }, 1000);
+        }
+
+        // ฟังก์ชันลงโทษเมื่อทำผิด (สลับแอป / แคปจอ)
+        function triggerViolation() {
+            if (!hasAgreed || isPenalized || violationTriggered) return;
+            violationTriggered = true; 
+            
+            let offenses = parseInt(localStorage.getItem('dl_offenses') || '0');
+            offenses++;
+            localStorage.setItem('dl_offenses', offenses);
+
+            let banMinutes = 0;
+            let msg = "แจ้งเตือนครั้งแรก: ระบบจะเตะคุณออกเพื่อความปลอดภัย";
+            
+            if (offenses === 2) { banMinutes = 1; msg = "ผิดกฎครั้งที่ 2: ระงับการใช้งาน 1 นาที"; }
+            else if (offenses === 3) { banMinutes = 3; msg = "ผิดกฎครั้งที่ 3: ระงับการใช้งาน 3 นาที"; }
+            else if (offenses === 4) { banMinutes = 5; msg = "ผิดกฎครั้งที่ 4: ระงับการใช้งาน 5 นาที"; }
+            else if (offenses >= 5) { banMinutes = 30; msg = "ผิดกฎร้ายแรง: ระงับการใช้งาน 30 นาที"; }
+
+            if (banMinutes > 0) {
+                const banEndTime = new Date().getTime() + (banMinutes * 60 * 1000);
+                localStorage.setItem('dl_ban_until', banEndTime);
+            }
+
+            document.getElementById('freezeMessage').innerText = msg;
+            document.getElementById('freezeScreen').classList.remove('hidden');
+            document.getElementById('freezeScreen').style.display = 'flex';
+            
+            setTimeout(() => { location.reload(); }, 3000);
+        }
+
+        // --- Event Listeners ดักจับการกระทำผิด ---
+
         document.addEventListener('keyup', (e) => {
             if (e.key === 'PrintScreen' || e.keyCode === 44) {
                 navigator.clipboard.writeText(''); 
-                alert('ขออภัยครับ ไม่อนุญาตให้แคปภาพหน้าจอ เพื่อความปลอดภัยของข้อมูล');
+                triggerViolation();
             }
         });
 
-        // ตรวจสอบ Email
+        // ระบบจับสลับแอป + ผ่อนผัน 30 วิ
+        function handleBlurOrHidden() {
+            if (hasAgreed && !isPenalized && !violationTriggered) {
+                document.body.classList.add('secure-blur');
+                blurPenaltyTimer = setTimeout(() => { triggerViolation(); }, gracePeriod);
+            }
+        }
+
+        function handleFocusOrVisible() {
+            if (hasAgreed && !isPenalized && !violationTriggered) {
+                document.body.classList.remove('secure-blur');
+                clearTimeout(blurPenaltyTimer);
+            }
+        }
+        
+        window.addEventListener('blur', handleBlurOrHidden);
+        window.addEventListener('focus', handleFocusOrVisible);
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) { handleBlurOrHidden(); } 
+            else { handleFocusOrVisible(); }
+        });
+
+        // ป้องกันคลิกขวา และ Anti-Zoom
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('dragstart', event => event.preventDefault());
+        
+        document.addEventListener('touchmove', function (event) {
+            if (event.scale !== 1) { event.preventDefault(); }
+            if (event.touches.length > 1) { event.preventDefault(); }
+        }, { passive: false });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'SELECT' && event.target.tagName !== 'BUTTON') {
+                    event.preventDefault();
+                }
+            }
+            lastTouchEnd = now;
+        }, false);
+
+
+        // ==========================================
+        // ระบบตรวจสอบ Email และ ฟอร์มเดิม
+        // ==========================================
         let isEmailValid = true; 
         const emailInput = document.getElementById('email');
         const emailErrorText = document.getElementById('emailErrorText');
@@ -364,7 +616,6 @@
                 if(parts.length === 2) {
                     const domain = parts[1].toLowerCase();
                     const commonMistakes = ['gmai.com', 'gamil.com', 'gmail.co', 'gmail.con', 'gmail.in.th', 'hotmail.com.th', 'hotmail.co'];
-                    
                     if (commonMistakes.includes(domain)) {
                         showEmailError(`คุณพิมพ์ @${domain} ผิดหรือเปล่า? ลองตรวจสอบดูอีกครั้งนะครับ`);
                         return;
@@ -402,26 +653,20 @@
             }
         }
 
-        // ==========================================
-        // ระบบ 2 Step Form
-        // ==========================================
         function goToStep2() {
             const form = document.getElementById('dataForm');
             
-            // เช็คว่ากรอกครบทุกช่องบังคับหรือยัง (HTML5 validation)
             if(!form.checkValidity()) {
                 form.reportValidity();
                 return;
             }
             
-            // เช็คว่าอีเมลพิมพ์ถูกไหม
             if (!isEmailValid) {
                 emailInput.focus();
                 alert("กรุณาแก้ไขอีเมลให้ถูกต้องก่อนครับ");
                 return;
             }
 
-            // ซ่อน Step 1 โชว์ Step 2
             document.getElementById('step1').classList.remove('show-smooth');
             document.getElementById('step1').classList.add('hidden-smooth');
             
@@ -490,6 +735,10 @@
             loadingSpinner.classList.remove('hidden');
             submitBtn.disabled = true;
 
+            // ปิดระบบจับผิดชั่วคราวตอนส่งข้อมูล เพื่อป้องกันบั๊กเวลาแอปขอสิทธิ์หรือเด้ง Popup ภายใน
+            const originalHasAgreed = hasAgreed;
+            hasAgreed = false; 
+
             fetch(WEB_APP_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -497,11 +746,12 @@
             })
             .then(response => response.json())
             .then(data => {
+                hasAgreed = originalHasAgreed; // เปิดระบบจับผิดกลับมาถ้าส่งไม่สำเร็จหรือรอคอนเฟิร์ม
+
                 if (data.status === 'success' || data.status === 'updated') {
-                    // ซ่อนฟอร์มหลัก
+                    hasAgreed = false; // ปิดการจับผิดถาวรเพราะส่งข้อมูลเสร็จแล้ว
                     document.getElementById('formContainer').classList.add('hidden');
                     
-                    // แสดงหน้าต่าง Success (ที่ไม่มี QR แล้ว เพราะโชว์ไปก่อนหน้าแล้ว)
                     const successDiv = document.getElementById('successMessage');
                     successDiv.classList.remove('hidden', 'scale-95', 'opacity-0');
                     successDiv.classList.add('scale-100', 'opacity-100');
@@ -529,6 +779,7 @@
                 }
             })
             .catch(error => {
+                hasAgreed = originalHasAgreed;
                 alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
                 resetButton();
             });
