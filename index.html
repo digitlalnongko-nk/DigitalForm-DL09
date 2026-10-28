@@ -28,7 +28,7 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            touch-action: pan-x pan-y;
+            /* เอา touch-action ออก เพื่อให้ Android เลื่อนจอได้ตามปกติ */
             -webkit-text-size-adjust: 100%;
             background-color: #fff0f5; 
             overflow-x: hidden;
@@ -193,7 +193,6 @@
         </svg>
         แจ้งปัญหา
     </a>
-
     <!-- 0. ระบบปิดตามเวลา 00:00 - 05:59 -->
     <div id="timeBlocker" class="absolute inset-0 z-[9999999] flex flex-col items-center justify-center bg-gray-900 p-6 hidden text-white text-center">
         <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20 max-w-sm w-full shadow-2xl">
@@ -256,17 +255,14 @@
             </div>
             <h2 class="text-2xl font-bold text-gray-800 mb-2">ระงับการใช้งานชั่วคราว</h2>
             <p class="text-gray-600 text-sm mb-6">ระบบตรวจพบการพยายามแคปหน้าจอ สลับแอปนานเกินไป หรือออกจากหน้าระบบหลายครั้ง คุณถูกระงับการใช้งาน</p>
-            
             <div class="bg-gray-100 p-4 rounded-xl mb-4 border border-gray-200 shadow-inner">
                 <p class="text-gray-500 text-xs mb-1 uppercase tracking-wider font-semibold">ปลดล็อคอัตโนมัติในอีก</p>
                 <p id="countdownTimer" class="text-4xl font-mono font-bold text-red-600">00:00</p>
             </div>
-
             <div id="appealStatusContainer" class="bg-blue-50 p-3 rounded-xl mb-4 border border-blue-200 text-sm text-blue-700 hidden">
                 <p class="font-bold mb-1">สถานะคำร้องขอปลดแบน:</p>
                 <p id="appealStatusText" class="text-xs">รอการตรวจสอบจากเจ้าหน้าที่</p>
             </div>
-
             <button id="btnOpenAppeal" onclick="document.getElementById('contactAdminModal').classList.remove('hidden')" class="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white py-3.5 px-4 rounded-xl font-medium transition-colors w-full text-sm shadow-md">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 ยื่นเรื่องขอปลดแบน
@@ -281,7 +277,6 @@
             <p id="aiQuotaText" class="text-xs text-blue-600 font-medium mb-4 bg-blue-50 p-2 rounded-lg border border-blue-100">
                 ✨ ระบบ AI จะอนุมัติคำร้องให้อัตโนมัติ<br>(สิทธิ์คงเหลือ: <span id="quotaCount" class="font-bold text-lg">3</span>/3 ครั้ง)
             </p>
-            
             <form id="adminContactForm" onsubmit="sendContactAdmin(event)">
                 <div class="space-y-4">
                     <div>
@@ -293,7 +288,6 @@
                         <textarea id="contactMessage" required rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"></textarea>
                     </div>
                 </div>
-                
                 <div class="flex space-x-2 mt-6">
                     <button type="button" onclick="document.getElementById('contactAdminModal').classList.add('hidden')" class="w-1/3 bg-gray-100 text-gray-600 py-2.5 rounded-xl text-sm font-medium">ยกเลิก</button>
                     <button type="submit" id="btnContactSubmit" class="w-2/3 bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-xl text-sm font-medium transition-colors flex justify-center items-center">
@@ -304,7 +298,7 @@
         </div>
     </div>
 
-    <!-- 3. หน้าต่างแจ้งเตือนเมื่อทำผิด (แช่แข็งชั่วคราว) -->
+    <!-- 3. หน้าต่างแจ้งเตือนเมื่อทำผิด (เปลี่ยนจากแช่แข็ง เป็นเตือนชั่วคราว) -->
     <div id="freezeScreen" class="freeze-overlay hidden">
         <svg class="w-24 h-24 mb-4 animate-pulse text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
         <h1 class="text-4xl font-bold mb-4">แจ้งเตือนความปลอดภัย!</h1>
@@ -313,6 +307,7 @@
             <p id="freezeMessage" class="text-lg font-bold text-yellow-300">กรุณาทำรายการอย่างต่อเนื่องเพื่อป้องกันข้อมูลรั่วไหล...</p>
         </div>
     </div>
+
     <!-- เนื้อหาฟอร์มหลัก -->
     <div id="mainAppWrapper" class="max-w-lg w-full relative z-10 hidden">
         
@@ -358,7 +353,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2" for="student_select">1. เลือกรายชื่อของคุณ <span class="text-pink-500">*</span></label>
                             <select id="student_select" required class="w-full px-4 py-3 border border-pink-100 rounded-xl transition-all bg-white/70 hover:bg-white text-gray-700 appearance-none shadow-sm bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23F472B6%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_12px] bg-no-repeat bg-[position:right_1rem_center]">
                                 <option value="" disabled selected>-- กดเพื่อค้นหาชื่อของคุณ --</option>
-                                    
+                                
                                 <optgroup label="ผู้ดูแลระบบ (เจ้าหน้าที่)">
                                     <option value="นายศรัณ ทัพขวา" data-grade="เจ้าหน้าที่">นายศรัณ ทัพขวา</option>
                                 </optgroup>
@@ -709,25 +704,9 @@
             else { handleFocusOrVisible(); }
         });
 
-        // ป้องกันคลิกขวา และ Anti-Zoom
+        // ป้องกันคลิกขวา และ Anti-Zoom (ปิดฟังก์ชันห้ามเลื่อนจอ เพื่อแก้ปัญหา Android เลื่อนไม่ได้)
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.addEventListener('dragstart', event => event.preventDefault());
-        
-        document.addEventListener('touchmove', function (event) {
-            if (event.scale !== 1) { event.preventDefault(); }
-            if (event.touches.length > 1) { event.preventDefault(); }
-        }, { passive: false });
-
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'SELECT' && event.target.tagName !== 'BUTTON') {
-                    event.preventDefault();
-                }
-            }
-            lastTouchEnd = now;
-        }, false);
 
 
         // ==========================================
