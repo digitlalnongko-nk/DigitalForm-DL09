@@ -95,13 +95,11 @@
             background-color: #fef2f2 !important;
         }
 
-        /* สำหรับเบลอหน้าจอเมื่อพยายามสลับแอป */
         .secure-blur {
             filter: blur(15px) grayscale(100%);
             pointer-events: none;
         }
 
-        /* สำหรับหน้าต่างบล็อก In-App Browser และบทลงโทษ */
         .penalty-modal-overlay {
             background-color: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
@@ -120,6 +118,64 @@
             text-align: center;
             padding: 20px;
         }
+
+        /* สไตล์สำหรับปุ่มรายงานปัญหามุมขวาบน */
+        .report-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 90000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            border-radius: 50px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0, 195, 0, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .report-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 195, 0, 0.2);
+            background: #fff;
+        }
+        .report-btn svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            fill: #06C755;
+        }
+
+        /* ========================================== */
+        /* ลายน้ำกันแคปจอ (Dynamic Watermark) */
+        /* ========================================== */
+        .watermark-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; /* กดทะลุได้ ไม่กวนการใช้งาน */
+            z-index: 99999;
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+            opacity: 0.05; /* จางๆ เพื่อไม่ให้กวนสายตา */
+            justify-content: center;
+            align-content: center;
+        }
+        .watermark-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #000;
+            transform: rotate(-30deg);
+            padding: 30px;
+            white-space: nowrap;
+            user-select: none;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8 flex items-center justify-center relative">
@@ -129,6 +185,14 @@
         <div class="pastel-blob blob-2"></div>
         <div class="pastel-blob blob-3"></div>
     </div>
+
+    <!-- ปุ่มรายงานปัญหามุมขวาบน (เชื่อม LINE ส่วนตัว) -->
+    <a href="https://line.me/ti/p/RLJKIUg89s" target="_blank" rel="noopener noreferrer" class="report-btn">
+        <svg viewBox="0 0 24 24">
+            <path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 3.552 8.845 8.365 9.589.325.069.755.226.861.536.096.28.061.716.031.996l-.16 1.016c-.05.31-.237 1.157 1.011.631 1.25-.527 6.721-3.957 9.444-6.974C22.613 14.152 24 12.35 24 10.304z"/>
+        </svg>
+        แจ้งปัญหา
+    </a>
 
     <!-- 0. ระบบปิดตามเวลา 00:00 - 05:59 -->
     <div id="timeBlocker" class="absolute inset-0 z-[9999999] flex flex-col items-center justify-center bg-gray-900 p-6 hidden text-white text-center">
@@ -161,7 +225,7 @@
         </div>
     </div>
 
-    <!-- 1. หน้าต่างข้อตกลง (เปิดมาเจอเลย) -->
+    <!-- 1. หน้าต่างข้อตกลง -->
     <div id="agreementScreen" class="absolute inset-0 z-50 flex items-center justify-center penalty-modal-overlay p-4 hidden">
         <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-t-8 border-pink-500 transform transition-all">
             <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
@@ -169,16 +233,13 @@
             </div>
             <h2 class="text-2xl font-bold text-gray-800 mb-3">นโยบายความปลอดภัยส่วนบุคคล (PDPA)</h2>
             <p class="text-gray-600 text-sm mb-4 leading-relaxed">
-                เพื่อปกป้องข้อมูลของท่าน <span class="text-red-500 font-bold">ไม่อนุญาตให้แคปหน้าจอ หรือปัดสลับแอปพลิเคชันเกินเวลาที่กำหนด (30 วินาที)</span> หากท่านต้องการดูข้อมูลเพิ่มเติม กรุณากลับมาที่หน้านี้ให้ทันเวลา
+                เพื่อปกป้องข้อมูลของท่าน <span class="text-red-500 font-bold">ไม่อนุญาตให้แคปหน้าจอ หรือปัดสลับแอปพลิเคชันเกินเวลาที่กำหนด (3 นาที)</span>
             </p>
             <div class="bg-red-50 p-4 rounded-xl text-left text-xs text-red-700 mb-6 space-y-2 border border-red-100">
                 <p>⚠️ หากระบบตรวจพบการละเมิด:</p>
                 <ul class="list-disc pl-5">
-                    <li>ครั้งที่ 1-3: แจ้งเตือนและเตะออกจากระบบ</li>
-                    <li>ครั้งที่ 4: ระงับการใช้งาน 1 นาที</li>
-                    <li>ครั้งที่ 5: ระงับการใช้งาน 3 นาที</li>
-                    <li>ครั้งที่ 6: ระงับการใช้งาน 5 นาที</li>
-                    <li>ครั้งที่ 7+: ระงับการใช้งาน 30 นาที</li>
+                    <li>ระบบจะแสดงหน้าจอแจ้งเตือนความปลอดภัย</li>
+                    <li>(ไม่มีการระงับการใช้งาน เพื่อให้ท่านสามารถติดต่อเจ้าหน้าที่ผ่านแอปพลิเคชัน LINE ได้ตามปกติ)</li>
                 </ul>
             </div>
             <button onclick="acceptTerms()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-lg">
@@ -187,7 +248,7 @@
         </div>
     </div>
 
-    <!-- 2. หน้าต่างระงับการใช้งาน (Penalty Screen) พร้อมแสดงสถานะคำร้อง -->
+    <!-- 2. หน้าต่างระงับการใช้งาน (ซ่อนไว้ ไม่ได้ใช้) -->
     <div id="penaltyScreen" class="absolute inset-0 z-40 flex items-center justify-center bg-gray-900 p-4 hidden">
         <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-t-8 border-red-600 relative overflow-hidden">
             <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
@@ -201,7 +262,6 @@
                 <p id="countdownTimer" class="text-4xl font-mono font-bold text-red-600">00:00</p>
             </div>
 
-            <!-- กล่องแจ้งสถานะคำร้อง (ซ่อนไว้ก่อน) -->
             <div id="appealStatusContainer" class="bg-blue-50 p-3 rounded-xl mb-4 border border-blue-200 text-sm text-blue-700 hidden">
                 <p class="font-bold mb-1">สถานะคำร้องขอปลดแบน:</p>
                 <p id="appealStatusText" class="text-xs">รอการตรวจสอบจากเจ้าหน้าที่</p>
@@ -214,7 +274,7 @@
         </div>
     </div>
 
-    <!-- 2.5 หน้าต่างฟอร์มยื่นคำร้อง (มีระบบ AI จำลอง) -->
+    <!-- 2.5 หน้าต่างฟอร์มยื่นคำร้อง (ซ่อนไว้ ไม่ได้ใช้) -->
     <div id="contactAdminModal" class="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 hidden">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full border-t-8 border-blue-500">
             <h3 class="text-xl font-bold text-gray-800 mb-1">ส่งคำร้องขอปลดแบน</h3>
@@ -244,13 +304,13 @@
         </div>
     </div>
 
-    <!-- 3. หน้าต่างแช่แข็งเมื่อจับได้สดๆ (Freeze Screen) -->
+    <!-- 3. หน้าต่างแจ้งเตือนเมื่อทำผิด (แช่แข็งชั่วคราว) -->
     <div id="freezeScreen" class="freeze-overlay hidden">
-        <svg class="w-24 h-24 mb-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-        <h1 class="text-4xl font-bold mb-4">ตรวจพบการละเมิด!</h1>
-        <p class="text-xl mb-2 text-red-100">ไม่อนุญาตให้แคปหน้าจอ หรือปัดสลับแอปพลิเคชัน</p>
-        <div class="bg-black/20 p-4 rounded-lg mt-6 border border-white/30 backdrop-blur-sm">
-            <p id="freezeMessage" class="text-lg font-bold">ระบบกำลังบันทึกประวัติความผิด...</p>
+        <svg class="w-24 h-24 mb-4 animate-pulse text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <h1 class="text-4xl font-bold mb-4">แจ้งเตือนความปลอดภัย!</h1>
+        <p class="text-xl mb-2 text-white">ระบบตรวจพบการแคปหน้าจอ หรือสลับแอปพลิเคชัน</p>
+        <div class="bg-black/30 p-4 rounded-lg mt-6 border border-white/30 backdrop-blur-sm">
+            <p id="freezeMessage" class="text-lg font-bold text-yellow-300">กรุณาทำรายการอย่างต่อเนื่องเพื่อป้องกันข้อมูลรั่วไหล...</p>
         </div>
     </div>
     <!-- เนื้อหาฟอร์มหลัก -->
@@ -265,7 +325,7 @@
                 
                 <div class="bg-white/30 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 backdrop-blur-md shadow-sm border border-white/50 rotate-3 transform hover:-rotate-6 transition-transform duration-300">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
                 </div>
                 <h1 class="text-2xl font-semibold mb-2 drop-shadow-md text-white">หลักสูตรการเข้าใจดิจิทัล</h1>
@@ -478,28 +538,59 @@
     </div>
     <script>
         // ==========================================
-        // ระบบตรวจจับ ป้องกัน และลงโทษ (Security & Penalty System)
+        // ระบบแจ้งเตือนความปลอดภัย (ไม่มีการแบนแล้ว)
         // ==========================================
         
         let hasAgreed = false;
-        let isPenalized = false;
+        let isPenalized = false; 
         let penaltyInterval;
         let violationTriggered = false; 
 
         let blurPenaltyTimer;
-        const gracePeriod = 30000; // เวลาให้สลับแอป (30 วินาที)
+        const gracePeriod = 180000; // เวลาอนุญาตให้สลับแอป (3 นาที)
+
+        // ==========================================
+        // ฟังก์ชันสร้างลายน้ำกันแคปจอ
+        // ==========================================
+        function createWatermark(studentName) {
+            // ลบลายน้ำเก่าออกก่อน
+            const oldWatermark = document.getElementById('secureWatermark');
+            if (oldWatermark) oldWatermark.remove();
+
+            // ถ้าไม่ได้เลือกชื่อ หรือเลือกกลับไปที่ค่าว่าง ให้หยุดการทำงาน
+            if (!studentName || studentName === "") return;
+
+            const watermarkDiv = document.createElement('div');
+            watermarkDiv.id = 'secureWatermark';
+            watermarkDiv.className = 'watermark-overlay';
+
+            // ใส่ชื่อเข้าไปซ้ำๆ 60 รอบ เพื่อให้กระจายเต็มจอ
+            for (let i = 0; i < 60; i++) {
+                const span = document.createElement('span');
+                span.className = 'watermark-text';
+                span.innerText = studentName;
+                watermarkDiv.appendChild(span);
+            }
+            
+            document.body.appendChild(watermarkDiv);
+        }
+
+        // ดักจับเวลาเด็กคลิกเลือกชื่อตัวเอง ให้สร้างลายน้ำเลย
+        document.getElementById('student_select').addEventListener('change', function() {
+            createWatermark(this.value);
+        });
 
         // ระบบเปลี่ยนธีมสีตามวัน
         function applyDayTheme() {
             const day = new Date().getDay();
             const themes = [
-                { from: 'from-red-400', via: 'via-rose-400', to: 'to-orange-400', b1: '#fecaca', b2: '#fca5a5', b3: '#fda4af' }, // 0 Sun (แดง)
-                { from: 'from-yellow-400', via: 'via-amber-400', to: 'to-orange-300', b1: '#fef08a', b2: '#fde047', b3: '#fcd34d' }, // 1 Mon (เหลือง)
-                { from: 'from-pink-400', via: 'via-purple-400', to: 'to-indigo-400', b1: '#fbcfe8', b2: '#e9d5ff', b3: '#bfdbfe' }, // 2 Tue (ชมพู)
-                { from: 'from-green-400', via: 'via-emerald-400', to: 'to-teal-400', b1: '#bbf7d0', b2: '#86efac', b3: '#a7f3d0' }, // 3 Wed (เขียว)
-                { from: 'from-orange-400', via: 'via-amber-500', to: 'to-yellow-500', b1: '#fed7aa', b2: '#fdba74', b3: '#fcd34d' }, // 4 Thu (ส้ม)
-                { from: 'from-blue-400', via: 'via-cyan-400', to: 'to-sky-400', b1: '#bfdbfe', b2: '#93c5fd', b3: '#a5f3fc' }, // 5 Fri (ฟ้า)
-                { from: 'from-purple-400', via: 'via-fuchsia-400', to: 'to-pink-400', b1: '#e9d5ff', b2: '#d8b4fe', b3: '#fbcfe8' }  // 6 Sat (ม่วง)
+                { from: 'from-red-400', via: 'via-rose-400', to: 'to-orange-400', b1: '#fecaca', b2: '#fca5a5', b3: '#fda4af' }, // 0 Sun
+                { from: 'from-yellow-400', via: 'via-amber-400', to: 'to-orange-300', b1: '#fef08a', b2: '#fde047', b3: '#fcd34d' }, // 1 Mon
+                { from: 'from-pink-400', via: 'via-purple-400', to: 'to-indigo-400', b1: '#fbcfe8', b2: '#e9d5ff', b3: '#bfdbfe' }, // 2 Tue
+                { from: 'from-green-400', via: 'via-emerald-400', to: 'to-teal-400', b1: '#bbf7d0', b2: '#86efac', b3: '#a7f3d0' }, // 3 Wed
+                { from: 'from-orange-400', via: 'via-amber-500', to: 'to-yellow-500', b1: '#fed7aa', b2: '#fdba74', b3: '#fcd34d' }, // 4 Thu
+                { from: 'from-blue-400', via: 'via-cyan-400', to: 'to-sky-400', b1: '#bfdbfe', b2: '#93c5fd', b3: '#a5f3fc' }, // 5 Fri
+                { from: 'from-purple-400', via: 'via-fuchsia-400', to: 'to-pink-400', b1: '#e9d5ff', b2: '#d8b4fe', b3: '#fbcfe8' }  // 6 Sat
             ];
             document.querySelector('.blob-1').style.background = themes[day].b1;
             document.querySelector('.blob-2').style.background = themes[day].b2;
@@ -539,38 +630,14 @@
         };
 
         function checkBanStatus() {
-            const banUntil = localStorage.getItem('dl_ban_until');
-            const isAppealPending = localStorage.getItem('dl_appeal_pending') === 'true';
-            const now = new Date().getTime();
-
-            if (banUntil && now < parseInt(banUntil)) {
-                isPenalized = true;
-                document.getElementById('agreementScreen').classList.add('hidden');
-                document.getElementById('mainAppWrapper').classList.add('hidden');
-                document.getElementById('penaltyScreen').classList.remove('hidden');
-                startCountdown(parseInt(banUntil));
-                
-                // อัปเดต UI คำร้อง
-                let appealCount = parseInt(localStorage.getItem('dl_appeal_count') || '0');
-                document.getElementById('quotaCount').innerText = 3 - appealCount;
-
-                if (isAppealPending) {
-                    document.getElementById('appealStatusContainer').classList.remove('hidden');
-                    document.getElementById('btnOpenAppeal').classList.add('opacity-50', 'cursor-not-allowed');
-                    document.getElementById('btnOpenAppeal').onclick = null;
-                    document.getElementById('btnOpenAppeal').innerHTML = "คำร้องถูกส่งแล้ว รอตรวจสอบ...";
-                }
+            isPenalized = false;
+            document.getElementById('penaltyScreen').classList.add('hidden');
+            
+            if(sessionStorage.getItem('dl_agreed') === 'true') {
+                hasAgreed = true;
+                document.getElementById('mainAppWrapper').classList.remove('hidden');
             } else {
-                isPenalized = false;
-                localStorage.removeItem('dl_appeal_pending');
-                document.getElementById('penaltyScreen').classList.add('hidden');
-                
-                if(sessionStorage.getItem('dl_agreed') === 'true') {
-                    hasAgreed = true;
-                    document.getElementById('mainAppWrapper').classList.remove('hidden');
-                } else {
-                    document.getElementById('agreementScreen').classList.remove('hidden');
-                }
+                document.getElementById('agreementScreen').classList.remove('hidden');
             }
         }
 
@@ -582,28 +649,10 @@
         }
 
         function startCountdown(endTime) {
-            clearInterval(penaltyInterval);
-            const display = document.getElementById('countdownTimer');
-            
-            penaltyInterval = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = endTime - now;
-
-                if (distance < 0) {
-                    clearInterval(penaltyInterval);
-                    localStorage.removeItem('dl_ban_until'); 
-                    localStorage.removeItem('dl_appeal_pending'); 
-                    location.reload(); 
-                    return;
-                }
-
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                display.innerText = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-            }, 1000);
+            // ... (โค้ดเก่าเก็บไว้เฉยๆ)
         }
 
-        // ฟังก์ชันลงโทษเมื่อทำผิด (เตือน 3 ครั้ง แบนครั้งที่ 4)
+        // ฟังก์ชันแจ้งเตือนเมื่อทำผิด (เปลี่ยนจากการแบนเป็นการแจ้งเตือนบนหน้าจอ 3 วินาที)
         function triggerViolation() {
             if (!hasAgreed || isPenalized || violationTriggered) return;
             violationTriggered = true; 
@@ -612,35 +661,21 @@
             offenses++;
             localStorage.setItem('dl_offenses', offenses);
             
-            // รีเซ็ตโควต้าคำร้อง AI เมื่อโดนทำโทษครั้งใหม่
-            localStorage.setItem('dl_appeal_count', '0');
-            localStorage.removeItem('dl_appeal_pending');
-
-            let banMinutes = 0;
-            let msg = "";
-            
-            if (offenses === 1) { msg = "แจ้งเตือนครั้งที่ 1: ห้ามแคปหน้าจอหรือสลับแอป"; }
-            else if (offenses === 2) { msg = "แจ้งเตือนครั้งที่ 2: กรุณาทำรายการให้เสร็จโดยไม่สลับแอป"; }
-            else if (offenses === 3) { msg = "แจ้งเตือนครั้งสุดท้าย: หากทำผิดอีก ระบบจะระงับการใช้งานทันที"; }
-            else if (offenses === 4) { banMinutes = 1; msg = "ผิดกฎครั้งที่ 4: ระงับการใช้งาน 1 นาที"; }
-            else if (offenses === 5) { banMinutes = 3; msg = "ผิดกฎครั้งที่ 5: ระงับการใช้งาน 3 นาที"; }
-            else if (offenses === 6) { banMinutes = 5; msg = "ผิดกฎครั้งที่ 6: ระงับการใช้งาน 5 นาที"; }
-            else if (offenses >= 7) { banMinutes = 30; msg = "ผิดกฎร้ายแรง: ระงับการใช้งาน 30 นาที"; }
-
-            if (banMinutes > 0) {
-                const banEndTime = new Date().getTime() + (banMinutes * 60 * 1000);
-                localStorage.setItem('dl_ban_until', banEndTime);
-            }
+            let msg = "แจ้งเตือนครั้งที่ " + offenses + ": กรุณาหลีกเลี่ยงการแคปหน้าจอหรือสลับแอป";
 
             document.getElementById('freezeMessage').innerText = msg;
             document.getElementById('freezeScreen').classList.remove('hidden');
             document.getElementById('freezeScreen').style.display = 'flex';
             
-            setTimeout(() => { location.reload(); }, 3000);
+            // ให้หน้าจอแจ้งเตือนหายไปเองใน 3 วินาที (ไม่มีการรีโหลดหรือแบน)
+            setTimeout(() => { 
+                document.getElementById('freezeScreen').classList.add('hidden');
+                document.getElementById('freezeScreen').style.display = 'none';
+                violationTriggered = false;
+            }, 3000);
         }
 
         // --- Event Listeners ดักจับการกระทำผิด ---
-
         document.addEventListener('keyup', (e) => {
             if (e.key === 'PrintScreen' || e.keyCode === 44) {
                 navigator.clipboard.writeText(''); 
@@ -648,7 +683,7 @@
             }
         });
 
-        // ระบบจับสลับแอป + ผ่อนผัน 30 วิ
+        // ระบบจับสลับแอป (อนุญาต 3 นาที ถ้าเกินจะแค่ขึ้นแจ้งเตือน 3 วินาที)
         function handleBlurOrHidden() {
             if (hasAgreed && !isPenalized && !violationTriggered) {
                 document.body.classList.add('secure-blur');
@@ -900,58 +935,11 @@
         }
 
         // ==========================================
-        // ระบบ AI ตรวจคำร้องอัตโนมัติ (โควต้า 3 ครั้ง)
+        // ฟังก์ชันฟอร์มติดต่อเจ้าหน้าที่ (โครงสร้างเดิมที่ไม่ได้ลบ)
         // ==========================================
         function sendContactAdmin(e) {
             e.preventDefault();
-            
-            let appealCount = parseInt(localStorage.getItem('dl_appeal_count') || '0');
-            
-            if (appealCount < 3) {
-                // AI อนุมัติอัตโนมัติ
-                appealCount++;
-                localStorage.setItem('dl_appeal_count', appealCount);
-                
-                alert(`✨ ระบบ AI พิจารณาอนุมัติคำร้องของคุณแล้ว (ใช้สิทธิ์ครั้งที่ ${appealCount}/3)\n\nระบบจะทำการปลดล็อคให้คุณเข้าใช้งานได้ทันที กรุณาระมัดระวังการใช้งานครับ`);
-                
-                localStorage.removeItem('dl_ban_until');
-                location.reload();
-            } else {
-                // สิทธิ์หมด ส่งเรื่องให้ Admin แทน
-                const btn = document.getElementById('btnContactSubmit');
-                const txt = document.getElementById('txtContactSubmit');
-                
-                btn.disabled = true;
-                txt.innerText = "กำลังส่งข้อมูล...";
-
-                const contactData = {
-                    type: "contact_admin",
-                    name: document.getElementById('contactName').value,
-                    message: document.getElementById('contactMessage').value
-                };
-
-                fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(contactData)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    alert("⚠️ สิทธิ์ปลดแบนอัตโนมัติของคุณหมดแล้ว (เกิน 3 ครั้ง)\n\nระบบได้ส่งคำร้องของคุณไปยังอีเมลเจ้าหน้าที่แล้ว โปรดรอการตรวจสอบครับ");
-                    
-                    localStorage.setItem('dl_appeal_pending', 'true');
-                    document.getElementById('contactAdminModal').classList.add('hidden');
-                    checkBanStatus(); // อัปเดตหน้า UI เป็นโหมดรอตรวจสอบ
-                    
-                    btn.disabled = false;
-                    txt.innerText = "ส่งคำร้อง";
-                })
-                .catch(error => {
-                    alert("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง");
-                    btn.disabled = false;
-                    txt.innerText = "ส่งคำร้อง";
-                });
-            }
+            // ...
         }
     </script>
 </body>
