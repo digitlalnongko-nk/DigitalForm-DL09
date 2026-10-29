@@ -113,9 +113,9 @@
                     
                     <div class="flex items-center space-x-2 sm:space-x-3">
                         <!-- ปุ่มโหลดข้อมูลใหม่ -->
-                        <button onclick="fetchData()" :class="{ 'opacity-75 cursor-not-allowed': isRefreshing }" class="bg-white hover:bg-slate-50 text-slate-700 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-sm font-medium transition-all flex items-center border border-slate-200 shadow-sm hover:shadow-md">
-                            <svg :class="{ 'animate-spin': isRefreshing }" class="w-4 h-4 text-indigo-500 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            <span class="hidden sm:inline" x-text="isRefreshing ? 'กำลังโหลด...' : 'รีเฟรชข้อมูล'"></span>
+                        <button id="btnRefresh" onclick="fetchData()" :class="{ 'opacity-75 cursor-not-allowed': isRefreshing }" class="bg-white hover:bg-slate-50 text-slate-700 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-sm font-medium transition-all flex items-center border border-slate-200 shadow-sm hover:shadow-md">
+                            <svg id="iconRefresh" :class="{ 'animate-spin': isRefreshing }" class="w-4 h-4 text-indigo-500 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            <span id="textRefresh" class="hidden sm:inline" x-text="isRefreshing ? 'กำลังโหลด...' : 'รีเฟรชข้อมูล'">รีเฟรชข้อมูล</span>
                         </button>
                         
                         <!-- กลุ่มปุ่ม Export -->
@@ -363,46 +363,88 @@
         let allData = []; 
         let currentFilteredData = [];
         let sortDirection = 1; // 1 = Ascending, -1 = Descending
+        let isFetching = false;
 
         // 1. ฟังก์ชันดึงข้อมูลจาก Google Sheets
         function fetchData() {
-            // ป้องกันการกดปุ่มรัวๆ ด้วย Alpine.js
-            const alpineData = document.querySelector('[x-data]').__x.$data;
-            if(alpineData.isRefreshing) return;
-            alpineData.isRefreshing = true;
+            if(isFetching) return;
+            isFetching = true;
+
+            // ทำให้ปุ่มหมุนแสดงสถานะกำลังโหลด
+            const iconRefresh = document.getElementById('iconRefresh');
+            const textRefresh = document.getElementById('textRefresh');
+            if(iconRefresh) iconRefresh.classList.add('animate-spin');
+            if(textRefresh) textRefresh.innerText = 'กำลังโหลด...';
 
             const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="py-16 text-center text-slate-500">
+                        <div class="flex flex-col items-center justify-center space-y-3">
+                            <svg class="animate-spin h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <span class="font-medium text-slate-600">กำลังเชื่อมต่อฐานข้อมูล...</span>
+                        </div>
+                    </td>
+                </tr>`;
             
-            fetch(SCRIPT_URL + "?action=get_data")
-                .then(response => response.json())
-                .then(data => {
-                    allData = data;
-                    currentFilteredData = [...allData]; // สำรองข้อมูลไว้สำหรับการกรอง
-                    
-                    document.getElementById('lastUpdated').innerText = new Date().toLocaleString('th-TH', { hour12: false });
-                    
-                    // เซ็ตวันที่สำหรับหน้าเอกสารราชการ
-                    const printDateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-                    document.getElementById('printDate').innerText = new Date().toLocaleDateString('th-TH', printDateOptions);
-                    
-                    updateDashboard(currentFilteredData);
-                    
-                    setTimeout(() => { alpineData.isRefreshing = false; }, 500); // ดีเลย์ให้ปุ่มหมุนสักนิดเพื่อความสมูท
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="7" class="py-16 text-center text-rose-500">
-                                <div class="flex flex-col items-center justify-center">
-                                    <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    <span class="font-medium">เกิดข้อผิดพลาดในการโหลดข้อมูล</span>
-                                    <span class="text-xs text-rose-400 mt-1">กรุณาลองใหม่อีกครั้ง</span>
-                                </div>
-                            </td>
-                        </tr>`;
-                    alpineData.isRefreshing = false;
-                });
+            // สร้าง script tag สำหรับ JSONP
+            const script = document.createElement('script');
+            const callbackName = 'jsonpCallback_' + Math.round(100000 * Math.random());
+            
+            // สร้างฟังก์ชันชั่วคราวเพื่อรับข้อมูล
+            window[callbackName] = function(data) {
+                allData = data;
+                currentFilteredData = [...allData]; // สำรองข้อมูลไว้สำหรับการกรอง
+                
+                document.getElementById('lastUpdated').innerText = new Date().toLocaleString('th-TH', { hour12: false });
+                
+                // เซ็ตวันที่สำหรับหน้าเอกสารราชการ
+                const printDateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('printDate').innerText = new Date().toLocaleDateString('th-TH', printDateOptions);
+                
+                updateDashboard(currentFilteredData);
+                
+                // ทำความสะอาด
+                delete window[callbackName];
+                document.body.removeChild(script);
+                resetBtnState();
+            };
+
+            // ดักจับ Error
+            script.onerror = function() {
+                console.error('JSONP Request Error');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-16 text-center text-rose-500">
+                            <div class="flex flex-col items-center justify-center">
+                                <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="font-medium">เกิดข้อผิดพลาดในการโหลดข้อมูล</span>
+                                <span class="text-xs text-rose-400 mt-1">กรุณาลองใหม่อีกครั้ง</span>
+                            </div>
+                        </td>
+                    </tr>`;
+                
+                delete window[callbackName];
+                document.body.removeChild(script);
+                resetBtnState();
+            };
+
+            script.src = SCRIPT_URL + '?action=get_data&callback=' + callbackName;
+            document.body.appendChild(script);
+        }
+        
+        function resetBtnState() {
+            isFetching = false;
+            const iconRefresh = document.getElementById('iconRefresh');
+            const textRefresh = document.getElementById('textRefresh');
+            if(iconRefresh) iconRefresh.classList.remove('animate-spin');
+            if(textRefresh) textRefresh.innerText = 'รีเฟรชข้อมูล';
+            
+            // เผื่อใช้กับ Alpine
+            try { 
+                const el = document.querySelector('[x-data]');
+                if(el && el.__x) el.__x.$data.isRefreshing = false; 
+            } catch(e) {}
         }
 
         // 2. ฟังก์ชันอัปเดตหน้าจอ (ตาราง และ การ์ดสรุป)
@@ -469,7 +511,7 @@
             dataToDisplay.forEach((row, index) => {
                 // ---------- การออกแบบ Badge สถานะ ----------
                 const thaidBadge = row.thaid === 'ติดตั้งแล้ว' 
-                    ? '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-emerald-100/80 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span>ติดตั้งแล้ว</span>'
+                    ? '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-emerald-100/80 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse"></span>ติดตั้งแล้ว</span>'
                     : '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-amber-100/80 text-amber-700 border border-amber-200"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5"></span>ยังไม่ติดตั้ง</span>';
                 
                 let nameNote = `<span class="text-slate-300">-</span>`;
@@ -595,7 +637,12 @@
         }
 
         // โหลดข้อมูลอัตโนมัติทันทีที่เข้าหน้าเว็บ
-        window.onload = fetchData;
+        
+        // เราจะตั้งให้เริ่มโหลดข้อมูลตอนหน้าเว็บพร้อม 100%
+        window.addEventListener('load', function() {
+            setTimeout(fetchData, 500); 
+        });
+
     </script>
 </body>
 </html>
