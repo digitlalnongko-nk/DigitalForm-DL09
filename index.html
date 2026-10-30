@@ -28,7 +28,6 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            /* เอา touch-action ออก เพื่อให้ Android เลื่อนจอได้ตามปกติ */
             -webkit-text-size-adjust: 100%;
             background-color: #fff0f5; 
             overflow-x: hidden;
@@ -119,7 +118,6 @@
             padding: 20px;
         }
 
-        /* สไตล์สำหรับปุ่มรายงานปัญหามุมขวาบน */
         .report-btn {
             position: fixed;
             top: 20px;
@@ -152,7 +150,6 @@
             fill: #06C755;
         }
 
-        /* ปุ่ม Admin (ขวาบน ใต้ปุ่มแจ้งปัญหา) */
         .admin-btn {
             position: fixed;
             top: 70px;
@@ -177,18 +174,15 @@
             transform: translateY(-2px);
         }
 
-        /* ========================================== */
-        /* ลายน้ำกันแคปจอ (Dynamic Watermark) */
-        /* ========================================== */
         .watermark-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; /* กดทะลุได้ ไม่กวนการใช้งาน */
+            pointer-events: none; 
             z-index: 99999;
             overflow: hidden;
             display: flex;
             flex-wrap: wrap;
-            opacity: 0.05; /* จางๆ เพื่อไม่ให้กวนสายตา */
+            opacity: 0.05; 
             justify-content: center;
             align-content: center;
         }
@@ -211,7 +205,7 @@
         <div class="pastel-blob blob-3"></div>
     </div>
 
-    <!-- ปุ่มรายงานปัญหามุมขวาบน (เชื่อม LINE ส่วนตัว) -->
+    <!-- ปุ่มรายงานปัญหามุมขวาบน -->
     <a href="https://line.me/ti/p/RLJKIUg89s" target="_blank" rel="noopener noreferrer" class="report-btn">
         <svg viewBox="0 0 24 24">
             <path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 3.552 8.845 8.365 9.589.325.069.755.226.861.536.096.28.061.716.031.996l-.16 1.016c-.05.31-.237 1.157 1.011.631 1.25-.527 6.721-3.957 9.444-6.974C22.613 14.152 24 12.35 24 10.304z"/>
@@ -226,7 +220,7 @@
     </button>
 
     <!-- หน้าต่างเข้าสู่ระบบ Admin -->
-    <div id="adminLoginModal" class="absolute inset-0 z-[999999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 hidden">
+    <div id="adminLoginModal" class="absolute inset-0 z-[10000000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 hidden">
         <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl max-w-sm w-full border-t-8 border-indigo-500">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-gray-800">สำหรับเจ้าหน้าที่เท่านั้น</h3>
@@ -249,6 +243,26 @@
                     เข้าสู่ Dashboard
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- 🔥 NEW: หน้าต่างปิดรับข้อมูลถาวร (Deadline Blocker) -->
+    <div id="deadlineBlocker" class="absolute inset-0 z-[9999999] flex flex-col items-center justify-center p-6 hidden text-center" style="background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(10px);">
+        <div class="glass-card p-8 md:p-10 rounded-3xl max-w-sm w-full shadow-2xl border-t-8 border-pink-400 transform hover:scale-105 transition-transform duration-500">
+            <div class="text-6xl mb-4 animate-bounce">⏰💖</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">ปิดรับข้อมูลแล้วจ้า!</h2>
+            <p class="text-gray-500 text-sm leading-relaxed mb-5">
+                ระบบได้ปิดการยืนยันข้อมูลแล้ว<br>เมื่อ <span class="font-bold text-pink-500">30 ตุลาคม 2569 เวลา 16:30 น.</span>
+            </p>
+            <div class="bg-gradient-to-r from-pink-50 to-purple-50 text-pink-600 p-4 rounded-xl text-sm font-medium border border-pink-100 shadow-inner">
+                ขอบคุณทุกคนที่ให้ความร่วมมือครับ 🙏✨<br>เตรียมตัวพบกันในวันกิจกรรมนะ!
+            </div>
+            
+            <!-- ปุ่มลับ สำหรับแอดมิน -->
+            <button onclick="document.getElementById('adminLoginModal').classList.remove('hidden')" class="mt-6 w-full bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 py-3 rounded-xl text-sm font-medium transition-colors flex items-center justify-center shadow-sm">
+                <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                เข้าสู่ระบบเจ้าหน้าที่
+            </button>
         </div>
     </div>
     <!-- 0. ระบบปิดตามเวลา 00:00 - 05:59 -->
@@ -607,7 +621,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
-                    type: 'contact_admin', // อาศัยช่องทางเดิมใน Code.gs
+                    type: 'contact_admin', 
                     name: "ระบบรักษาความปลอดภัย",
                     message: `[${subject}]\n\n${body}`
                 })
@@ -624,7 +638,6 @@
             const pass = document.getElementById('adminPass').value;
 
             if (id === 'Admin' && pass === '66440763') {
-                // ข้อมูลถูกต้อง -> พาไปหน้า Dashboard ทันที
                 window.location.href = 'https://digitalformdl09.vercel.app/dashboard.html';
                 loginFailCount = 0; 
             } else {
@@ -646,7 +659,7 @@
         }
 
         // ==========================================
-        // ระบบแจ้งเตือนความปลอดภัย (ป้องกันแคปจอ)
+        // ระบบรักษาความปลอดภัย และการแสดงผลพื้นหลัง
         // ==========================================
         let hasAgreed = false;
         let isPenalized = false; 
@@ -655,7 +668,6 @@
         let blurPenaltyTimer;
         const gracePeriod = 180000; // เวลาอนุญาตให้สลับแอป (3 นาที)
 
-        // สร้างลายน้ำ
         function createWatermark(studentName) {
             const oldWatermark = document.getElementById('secureWatermark');
             if (oldWatermark) oldWatermark.remove();
@@ -678,7 +690,6 @@
             createWatermark(this.value);
         });
 
-        // ธีมสีตามวัน
         function applyDayTheme() {
             const day = new Date().getDay();
             const themes = [
@@ -711,12 +722,27 @@
         }
 
         window.onload = function() {
-            const currentHour = new Date().getHours();
+            // โหลดธีมสีก่อนเลย ให้พื้นหลังเปลี่ยนสีตามวันสวยๆ แม้ระบบจะปิด
+            applyDayTheme();
+
+            // 1. เช็คเวลาปิดฟอร์มถาวร (30 ตุลาคม 2569 เวลา 16:30:00 น.)
+            // เดือนใน JS เริ่มนับจาก 0 (ดังนั้น 9 = ตุลาคม)
+            const deadline = new Date(2026, 9, 30, 16, 30, 0);
+            const now = new Date();
+
+            if (now >= deadline) {
+                document.getElementById('deadlineBlocker').classList.remove('hidden');
+                return; // หยุดโหลดส่วนของฟอร์ม (แต่สามารถกดเข้า Dashboard ได้)
+            }
+
+            // 2. ระบบจำกัดเวลา 06:00 - 23:59 (ระบบเดิม)
+            const currentHour = now.getHours();
             if (currentHour < 6) {
                 document.getElementById('timeBlocker').classList.remove('hidden');
                 return; 
             }
-            applyDayTheme();
+
+            // 3. ตรวจสอบเบราว์เซอร์
             if(checkInAppBrowser()) return; 
             checkBanStatus();
         };
@@ -739,9 +765,6 @@
             document.getElementById('mainAppWrapper').classList.remove('hidden');
         }
 
-        // ==========================================
-        // ฟังก์ชันเมื่อจับได้ว่าทำผิด (และส่งอีเมลแจ้งเตือนทุกครั้ง!)
-        // ==========================================
         function triggerViolation() {
             if (!hasAgreed || isPenalized || violationTriggered) return;
             violationTriggered = true; 
@@ -752,7 +775,7 @@
             
             let msg = "แจ้งเตือนครั้งที่ " + offenses + ": กรุณาหลีกเลี่ยงการแคปหน้าจอหรือสลับแอป";
 
-            // 👉 แจ้งเตือนเข้าอีเมลแอดมินทุกครั้งเมื่อมีการพยายามแคปจอหรือสลับแอป
+            // ส่งแจ้งเตือนแอดมินทุกครั้ง
             sendEmailAlertToAdmin(
                 "🚨 ระวัง! พบการแคปหน้าจอ / สลับแอป",
                 `มีผู้ใช้งานละเมิดกฎในหน้าฟอร์มกรอกข้อมูล\nจำนวนครั้งที่ตรวจพบ: ${offenses} ครั้ง`
@@ -944,7 +967,7 @@
 
                 if (data.status === 'success' || data.status === 'updated') {
                     
-                    // 👉 ส่งอีเมลแจ้งเตือนแอดมินเวลามีคนส่งฟอร์มใหม่ หรือแก้ไขฟอร์ม (ทุกกรณี)
+                    // แจ้งแอดมินทุกครั้งเมื่อมีคนส่งฟอร์มสำเร็จ
                     const statusText = data.status === 'updated' ? "มีการแก้ไขข้อมูล" : "มีการส่งข้อมูลใหม่";
                     sendEmailAlertToAdmin(
                         "📄 อัปเดต: " + statusText + " (DL-09)",
@@ -1002,10 +1025,6 @@
             document.getElementById('btnText').classList.remove('hidden');
             document.getElementById('loadingSpinner').classList.add('hidden');
             submitBtn.disabled = false;
-        }
-
-        function sendContactAdmin(e) {
-            e.preventDefault();
         }
     </script>
 </body>
