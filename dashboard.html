@@ -9,10 +9,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Fonts -->
-    <!-- Prompt สำหรับหน้าเว็บปกติ -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Sarabun สำหรับรูปแบบเอกสารราชการตอนสั่งพิมพ์ -->
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Alpine.js สำหรับลดอาการกระตุกของปุ่มรีเฟรช -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         /* สไตล์สำหรับหน้าจอปกติ */
@@ -21,7 +21,7 @@
         }
         body { 
             font-family: 'Prompt', sans-serif; 
-            background-color: #f8fafc; /* พื้นหลังสีเทาอ่อน สบายตา ทันสมัย */
+            background-color: #f8fafc;
         }
         
         /* Modern Glassmorphism & Shadow */
@@ -56,12 +56,14 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        /* สไตล์สำหรับหน้ากระดาษ (PDF / พิมพ์เอกสารราชการ) */
+        /* ========================================== */
+        /* สไตล์สำหรับหน้ากระดาษ (พิมพ์ PDF แนวนอน สไตล์คลีน) */
+        /* ========================================== */
         @media print {
             body { 
                 background-color: white; 
-                font-family: 'Sarabun', sans-serif; 
-                color: black;
+                font-family: 'Prompt', sans-serif; /* ใช้ฟอนต์หลักให้ดูทันสมัย */
+                color: #334155;
                 margin: 0;
                 padding: 0;
             }
@@ -69,22 +71,47 @@
             .print-only { display: block !important; }
             
             @page {
-                size: A4;
-                margin: 2.5cm 2cm 2cm 2.5cm;
+                size: A4 landscape; /* บังคับกระดาษแนวนอน */
+                margin: 1.5cm; /* ขอบกระดาษพอดีๆ */
             }
 
-            .official-header { text-align: center; margin-bottom: 20px; }
-            .garuda { width: 55px; height: auto; margin: 0 auto 15px auto; filter: grayscale(100%); }
-            
-            .print-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 16pt; }
-            .print-table th, .print-table td {
-                border: 1px solid black;
-                padding: 4px 8px;
-                vertical-align: top;
+            .print-header { 
+                text-align: center; 
+                margin-bottom: 20px; 
+                border-bottom: 2px solid #e2e8f0;
+                padding-bottom: 15px;
             }
-            .print-table th { font-weight: bold; text-align: center; background-color: #f9f9f9 !important; -webkit-print-color-adjust: exact; }
+            .print-header h1 { 
+                font-size: 18pt; 
+                font-weight: 600; 
+                color: #0f172a; 
+                margin: 0 0 5px 0; 
+            }
+            .print-header p { 
+                font-size: 12pt; 
+                color: #64748b; 
+                margin: 0; 
+            }
             
-            .signature-box { margin-top: 50px; text-align: right; font-size: 16pt; padding-right: 20px; page-break-inside: avoid; }
+            .print-table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                margin-top: 10px; 
+                font-size: 11pt; /* ขนาดตัวอักษรอ่านง่าย */
+            }
+            .print-table th, .print-table td {
+                border: 1px solid #cbd5e1;
+                padding: 10px;
+                vertical-align: middle;
+            }
+            .print-table th { 
+                font-weight: 600; 
+                text-align: center; 
+                background-color: #f8fafc !important; 
+                -webkit-print-color-adjust: exact; 
+                color: #475569;
+            }
+            .print-table td { color: #334155; }
         }
     </style>
 </head>
@@ -108,7 +135,7 @@
                     </div>
                     
                     <div class="flex items-center space-x-2 sm:space-x-3">
-                        <!-- ปุ่มโหลดข้อมูลใหม่ (เอา Alpine.js ออก เปลี่ยนไปใช้ JS คุมแทน) -->
+                        <!-- ปุ่มโหลดข้อมูลใหม่ -->
                         <button id="btnRefresh" onclick="fetchData()" class="bg-white hover:bg-slate-50 text-slate-700 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-sm font-medium transition-all flex items-center border border-slate-200 shadow-sm hover:shadow-md">
                             <svg id="iconRefresh" class="w-4 h-4 text-indigo-500 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                             <span id="textRefresh" class="hidden sm:inline">รีเฟรชข้อมูล</span>
@@ -308,43 +335,29 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- 2. ส่วนหน้ากระดาษ (แสดงเฉพาะตอนสั่งพิมพ์ PDF) -->
+    <!-- 2. ส่วนหน้ากระดาษ (แสดงเฉพาะตอนสั่งพิมพ์ PDF แนบแบบคลีนๆ) -->
     <!-- ========================================== -->
     <div class="print-only">
-        <div class="official-header">
-            <!-- ตราครุฑ -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Garuda_of_Thailand_-_Current_Version.svg/800px-Garuda_of_Thailand_-_Current_Version.svg.png" class="garuda" alt="ตราครุฑ">
-            <h1 style="font-size: 24pt; font-weight: bold; margin: 0;">บันทึกข้อความ</h1>
-        </div>
-        
-        <div style="font-size: 16pt; margin-bottom: 20px;">
-            <p style="margin: 5px 0;"><strong>ส่วนราชการ</strong> ศูนย์ดิจิทัลชุมชน โรงเรียนหนองโกวิชาประสิทธิ์พิทยาคม</p>
-            <p style="margin: 5px 0;"><strong>เรื่อง</strong> สรุปรายชื่อผู้เข้าร่วมโครงการหลักสูตรสมรรถนะด้านการใช้ดิจิทัล Digital Literacy รุ่นที่ 9 (DL-09)</p>
-            <p style="margin: 5px 0;"><strong>ข้อมูล ณ วันที่</strong> <span id="printDate"></span></p>
+        <div class="print-header">
+            <h1>สรุปรายชื่อผู้เข้าร่วมโครงการหลักสูตรการเข้าใจดิจิทัล รุ่นที่ 9 (DL-09)</h1>
+            <p>ข้อมูล ณ วันที่ <span id="printDate"></span></p>
         </div>
 
         <table class="print-table">
             <thead>
                 <tr>
-                    <th style="width: 8%;">ลำดับ</th>
+                    <th style="width: 5%;">ลำดับ</th>
                     <th style="width: 25%;">ชื่อ - สกุล</th>
-                    <th style="width: 12%;">ระดับชั้น</th>
-                    <th style="width: 15%;">สถานะ</th>
+                    <th style="width: 10%;">ระดับชั้น</th>
+                    <th style="width: 15%;">สถานะการตอบรับ</th>
                     <th style="width: 20%;">เบอร์โทรศัพท์</th>
-                    <th style="width: 20%;">หมายเหตุ</th>
+                    <th style="width: 25%;">หมายเหตุ</th>
                 </tr>
             </thead>
             <tbody id="printTableBody">
                 <!-- ข้อมูลสำหรับพริ้นท์จะถูกแทรกที่นี่ -->
             </tbody>
         </table>
-
-        <div class="signature-box">
-            <p style="margin: 5px 0;">ลงชื่อ.........................................................ผู้รายงาน</p>
-            <p style="margin: 5px 0;">( นายศรัณ ทัพขวา )</p>
-            <p style="margin: 5px 0;">ตำแหน่ง เจ้าหน้าที่ศูนย์ดิจิทัลชุมชน</p>
-            <p style="margin: 5px 0;">โรงเรียนหนองโกวิชาประสิทธิ์พิทยาคม</p>
-        </div>
     </div>
     <!-- ========================================== -->
     <!-- JAVASCRIPT SYSTEM -->
@@ -356,7 +369,6 @@
         // ----------------------------------------------------
         
         // 🌟 รายชื่อผู้มีสิทธิ์ทั้งหมดตั้งต้น (Master List 19 คน) 
-        // จะใช้ดึงมาโชว์ในกรณีที่แผ่นงาน MasterList ใน Google Sheet อ่านไม่ได้ครับ
         const MASTER_STUDENTS = [
             { name: "นายศรัณ ทัพขวา", grade: "เจ้าหน้าที่" },
             { name: "เด็กชายณัฐดนัย ดวงจำปา", grade: "ม.1" },
@@ -390,7 +402,6 @@
             if(isFetching) return;
             isFetching = true;
 
-            // นำระบบควบคุม UI ของปุ่มรีเฟรชมาเขียนด้วย Vanilla JS แทน Alpine.js ที่มีปัญหา
             const btnRefresh = document.getElementById('btnRefresh');
             const iconRefresh = document.getElementById('iconRefresh');
             const textRefresh = document.getElementById('textRefresh');
@@ -401,15 +412,12 @@
 
             const tbody = document.getElementById('tableBody');
             
-            // เรียกข้อมูลด้วย fetch แบบปกติ (และเพิ่ม redirect: 'follow' เพื่อแก้ปัญหา Vercel)
             fetch(SCRIPT_URL + "?action=get_data", {
                 method: 'GET',
                 redirect: 'follow' 
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                if (!response.ok) throw new Error('Network response was not ok');
                 return response.text(); 
             })
             .then(textData => {
@@ -420,19 +428,16 @@
                     throw new Error("ข้อมูลที่ส่งกลับมาไม่ใช่ JSON โปรดตรวจสอบการ Deploy (Who has access ต้องเป็น Anyone)");
                 }
 
-                // ดึงข้อมูล 2 ก้อนที่ Backend ยิงมาให้
-                // ถ้าในชีต MasterList ไม่มีข้อมูล ให้ใช้ MASTER_STUDENTS ที่ฝังในโค้ดแทนกันพัง
                 const masterList = (parsedData.master && parsedData.master.length > 0) ? parsedData.master : MASTER_STUDENTS;
                 const registeredList = parsedData.registered || [];
 
-                TARGET_TOTAL = masterList.length; // ตั้งเป้าหมายจากจำนวนแถวในหน้า MasterList 
+                TARGET_TOTAL = masterList.length; 
 
-                // ผสานข้อมูล (Merge) รายชื่อตั้งต้น เข้ากับ คนที่กรอกแล้ว
                 combinedData = masterList.map(master => {
                     const foundInSheet = registeredList.find(row => row.name === master.name);
                     
                     if (foundInSheet) {
-                        return { ...foundInSheet, statusVal: 1, hasConfirmed: true }; // กรอกแล้ว
+                        return { ...foundInSheet, statusVal: 1, hasConfirmed: true }; 
                     } else {
                         return { 
                             name: master.name, 
@@ -442,12 +447,11 @@
                             nameStatus: '-', 
                             timestamp: null,
                             statusVal: 0,
-                            hasConfirmed: false // ยังไม่กรอก
+                            hasConfirmed: false 
                         };
                     }
                 });
 
-                // กรณีมีคนกรอกเข้ามาแต่ไม่มีชื่อใน Master List (พิมพ์ชื่อผิด ฯลฯ) จะได้ไม่ตกหล่น
                 registeredList.forEach(reg => {
                     const exist = combinedData.find(c => c.name === reg.name);
                     if (!exist) {
@@ -463,7 +467,6 @@
                 
                 updateDashboard(currentFilteredData);
                 
-                // คืนค่าปุ่มรีเฟรชกลับสู่สถานะปกติ
                 if(btnRefresh) btnRefresh.classList.remove('opacity-75', 'cursor-not-allowed');
                 if(iconRefresh) iconRefresh.classList.remove('animate-spin');
                 if(textRefresh) textRefresh.innerText = 'รีเฟรชข้อมูล';
@@ -478,7 +481,6 @@
                 
                 tbody.innerHTML = `<tr><td colspan="8" class="py-16 text-center text-rose-500 font-medium">${errorMsg}</td></tr>`;
                 
-                // คืนค่าปุ่มรีเฟรชกลับสู่สถานะปกติเมื่อเกิด Error
                 if(btnRefresh) btnRefresh.classList.remove('opacity-75', 'cursor-not-allowed');
                 if(iconRefresh) iconRefresh.classList.remove('animate-spin');
                 if(textRefresh) textRefresh.innerText = 'รีเฟรชข้อมูล';
@@ -542,7 +544,7 @@
 
             dataToDisplay.forEach((row, index) => {
                 
-                // ออกแบบป้ายสถานะยืนยันข้อมูล
+                // ออกแบบป้ายสถานะยืนยันข้อมูล (เว็บ)
                 const statusBadge = row.hasConfirmed 
                     ? '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-emerald-100/80 text-emerald-700 border border-emerald-200">ยืนยันแล้ว</span>'
                     : '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-rose-100/80 text-rose-700 border border-rose-200">ยังไม่ยืนยัน</span>';
@@ -576,13 +578,15 @@
                 `;
                 tbody.appendChild(tr);
 
-                // --- ตารางพิมพ์ PDF ---
+                // --- ตารางพิมพ์ PDF (ปรับสไตล์ให้เข้ากับ CSS ใหม่) ---
                 const printTr = document.createElement('tr');
+                const statusPrintColor = row.hasConfirmed ? 'color: #059669; font-weight: 500;' : 'color: #e11d48; font-weight: 500;';
+                
                 printTr.innerHTML = `
                     <td style="text-align: center;">${index + 1}</td>
                     <td>${row.name}</td>
                     <td style="text-align: center;">${row.grade}</td>
-                    <td style="text-align: center; ${!row.hasConfirmed ? 'color: red;' : ''}">${row.hasConfirmed ? 'ยืนยันแล้ว' : 'ยังไม่ยืนยัน'}</td>
+                    <td style="text-align: center; ${statusPrintColor}">${row.hasConfirmed ? 'ยืนยันแล้ว' : 'ยังไม่ยืนยัน'}</td>
                     <td style="text-align: center;">${formattedPhone}</td>
                     <td>${printNote}</td>
                 `;
