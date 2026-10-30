@@ -137,8 +137,9 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow flex flex-col">
             
-            <!-- Summary Stats Section -->
+            <!-- Summary Stats Section (Modern Design) -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                
                 <!-- การ์ด 1: เป้าหมายทั้งหมด -->
                 <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover-lift relative overflow-hidden group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -151,7 +152,7 @@
                         </div>
                     </div>
                     <div class="flex items-baseline space-x-1">
-                        <h3 class="text-3xl font-bold text-slate-800" id="targetTotalCount">19</h3>
+                        <h3 class="text-3xl font-bold text-slate-800" id="targetTotalCount">0</h3>
                         <span class="text-sm font-medium text-slate-400">คน</span>
                     </div>
                     <div class="mt-3 w-full bg-slate-100 rounded-full h-1.5">
@@ -260,7 +261,7 @@
                 <div class="overflow-x-auto flex-grow">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
+                            <tr class="bg-slate-50/50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
                                 <th class="py-4 px-6 font-semibold whitespace-nowrap">#</th>
                                 <th class="py-4 px-6 font-semibold whitespace-nowrap cursor-pointer hover:text-indigo-600 transition-colors" onclick="sortData('name')">
                                     <div class="flex items-center">ชื่อ-สกุล (ในระบบ) <svg class="w-3 h-3 ml-1 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg></div>
@@ -359,6 +360,30 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoih1w2x0vewTbd6bbeQhGAzD8vJztBvrLaM9oquem4z6F-E-tXgyjnWMp5Sr_6zZ9/exec';
         // ----------------------------------------------------
         
+        // 🌟 รายชื่อผู้มีสิทธิ์ทั้งหมดตั้งต้น (Master List 19 คน) 
+        // จะใช้ดึงมาโชว์ในกรณีที่แผ่นงาน MasterList ใน Google Sheet อ่านไม่ได้ครับ
+        const MASTER_STUDENTS = [
+            { name: "นายศรัณ ทัพขวา", grade: "เจ้าหน้าที่" },
+            { name: "เด็กชายณัฐดนัย ดวงจำปา", grade: "ม.1" },
+            { name: "เด็กชายกตัญญู ชมพูพาน", grade: "ม.1" },
+            { name: "เด็กหญิงพิมพ์ชนก วงชารี", grade: "ม.1" },
+            { name: "เด็กหญิงปลายปรีญา แสงดี", grade: "ม.2" },
+            { name: "เด็กชายสิทธิศักดิ์ เสนาวัน", grade: "ม.2" },
+            { name: "เด็กชายวงศกร นามวิเศษ", grade: "ม.2" },
+            { name: "เด็กหญิงกวินทรา สร้างนอก", grade: "ม.3" },
+            { name: "เด็กหญิงฝนทิพย์ ทึกทา", grade: "ม.3" },
+            { name: "เด็กหญิงวรรณภา กุดเงิน", grade: "ม.3" },
+            { name: "นางสาวศุภิสรา พรหนอง", grade: "ม.4" },
+            { name: "นายมรุต ขันตรี", grade: "ม.4" },
+            { name: "นางสาวนุจรี มาไส", grade: "ม.4" },
+            { name: "นางสาวณัฐริดา งามยิ่ง", grade: "ม.5" },
+            { name: "นายแทนคุณ สุวรรณภักดี", grade: "ม.5" },
+            { name: "นายกวินท์ วิเศษทักษิณ", grade: "ม.5" },
+            { name: "นายณัฐนันท์ ดวงจำปา", grade: "ม.6" },
+            { name: "นางสาวลัดดาวัลย์ ไธสง", grade: "ม.6" },
+            { name: "นางสาวศิริวรรณ หาวอ", grade: "ม.6" }
+        ];
+
         let combinedData = []; 
         let currentFilteredData = [];
         let sortDirection = 1; // 1 = Ascending, -1 = Descending
@@ -395,7 +420,8 @@
                 }
 
                 // ดึงข้อมูล 2 ก้อนที่ Backend ยิงมาให้
-                const masterList = parsedData.master || [];
+                // ถ้าในชีต MasterList ไม่มีข้อมูล ให้ใช้ MASTER_STUDENTS ที่ฝังในโค้ดแทนกันพัง
+                const masterList = (parsedData.master && parsedData.master.length > 0) ? parsedData.master : MASTER_STUDENTS;
                 const registeredList = parsedData.registered || [];
 
                 TARGET_TOTAL = masterList.length; // ตั้งเป้าหมายจากจำนวนแถวในหน้า MasterList 
@@ -455,23 +481,24 @@
         function updateDashboard(dataToDisplay) {
             
             // --- นับยอดจากการผสานข้อมูล ---
+            const targetTotal = TARGET_TOTAL > 0 ? TARGET_TOTAL : MASTER_STUDENTS.length;
             const confirmedTotal = combinedData.filter(d => d.hasConfirmed).length;
-            const pendingTotal = TARGET_TOTAL - confirmedTotal;
-            const confirmedPercent = TARGET_TOTAL > 0 ? Math.round((confirmedTotal / TARGET_TOTAL) * 100) : 0;
+            const pendingTotal = targetTotal - confirmedTotal;
+            const confirmedPercent = targetTotal > 0 ? Math.round((confirmedTotal / targetTotal) * 100) : 0;
             
             const thaidCount = combinedData.filter(row => row.thaid === 'ติดตั้งแล้ว').length;
             const thaidPercent = confirmedTotal > 0 ? Math.round((thaidCount / confirmedTotal) * 100) : 0;
             
-            document.getElementById('targetTotalCount').innerText = TARGET_TOTAL;
-            document.getElementById('footerTotalLabel').innerText = TARGET_TOTAL;
+            document.getElementById('targetTotalCount').innerText = targetTotal;
+            document.getElementById('footerTotalLabel').innerText = targetTotal;
             document.getElementById('confirmedCount').innerText = confirmedTotal;
             document.getElementById('confirmedPercentText').innerText = `คิดเป็น ${confirmedPercent}% ของเป้าหมาย`;
             
             document.getElementById('pendingCount').innerText = pendingTotal;
-            const pendingPercent = TARGET_TOTAL > 0 ? Math.round((pendingTotal / TARGET_TOTAL) * 100) : 0;
+            const pendingPercent = targetTotal > 0 ? Math.round((pendingTotal / targetTotal) * 100) : 0;
             document.getElementById('pendingBar').style.width = `${pendingPercent}%`;
             
-            if (pendingTotal <= 0 && TARGET_TOTAL > 0) {
+            if (pendingTotal <= 0 && targetTotal > 0) {
                 document.getElementById('pendingCount').classList.replace('text-slate-800', 'text-emerald-500');
                 document.getElementById('pendingBar').classList.replace('bg-amber-400', 'bg-emerald-400');
                 document.getElementById('pendingCount').innerText = 'ครบถ้วน';
