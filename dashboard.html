@@ -13,9 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Sarabun สำหรับรูปแบบเอกสารราชการตอนสั่งพิมพ์ -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Alpine.js สำหรับลดอาการกระตุกของปุ่มรีเฟรช -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         /* สไตล์สำหรับหน้าจอปกติ */
@@ -91,9 +88,8 @@
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased" x-data="{ isRefreshing: false }">
-
-    <!-- ========================================== -->
+<body class="text-slate-800 antialiased">
+<!-- ========================================== -->
     <!-- 1. ส่วนหน้าจอ Dashboard ปกติ (ไม่แสดงตอนพิมพ์) -->
     <!-- ========================================== -->
     <div class="no-print min-h-screen flex flex-col">
@@ -112,10 +108,10 @@
                     </div>
                     
                     <div class="flex items-center space-x-2 sm:space-x-3">
-                        <!-- ปุ่มโหลดข้อมูลใหม่ -->
-                        <button id="btnRefresh" onclick="fetchData()" :class="{ 'opacity-75 cursor-not-allowed': isRefreshing }" class="bg-white hover:bg-slate-50 text-slate-700 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-sm font-medium transition-all flex items-center border border-slate-200 shadow-sm hover:shadow-md">
-                            <svg id="iconRefresh" :class="{ 'animate-spin': isRefreshing }" class="w-4 h-4 text-indigo-500 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            <span id="textRefresh" class="hidden sm:inline" x-text="isRefreshing ? 'กำลังโหลด...' : 'รีเฟรชข้อมูล'">รีเฟรชข้อมูล</span>
+                        <!-- ปุ่มโหลดข้อมูลใหม่ (เอา Alpine.js ออก เปลี่ยนไปใช้ JS คุมแทน) -->
+                        <button id="btnRefresh" onclick="fetchData()" class="bg-white hover:bg-slate-50 text-slate-700 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-sm font-medium transition-all flex items-center border border-slate-200 shadow-sm hover:shadow-md">
+                            <svg id="iconRefresh" class="w-4 h-4 text-indigo-500 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            <span id="textRefresh" class="hidden sm:inline">รีเฟรชข้อมูล</span>
                         </button>
                         
                         <!-- กลุ่มปุ่ม Export -->
@@ -126,7 +122,7 @@
                             </button>
                             <div class="w-px h-4 bg-slate-300 mx-1"></div>
                             <button onclick="window.print()" class="hover:bg-white text-rose-600 px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center hover:shadow-sm" title="พิมพ์เอกสาร">
-                                <svg class="w-4 h-4 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                <svg class="w-4 h-4 sm:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                                 <span class="hidden sm:inline">PDF</span>
                             </button>
                         </div>
@@ -346,11 +342,10 @@
         <div class="signature-box">
             <p style="margin: 5px 0;">ลงชื่อ.........................................................ผู้รายงาน</p>
             <p style="margin: 5px 0;">( นายศรัณ ทัพขวา )</p>
-            <p style="margin: 5px 0;">ตำแหน่ง ผู้จัดการศูนย์ดิจิทัลชุมชน</p>
+            <p style="margin: 5px 0;">ตำแหน่ง เจ้าหน้าที่ศูนย์ดิจิทัลชุมชน</p>
             <p style="margin: 5px 0;">โรงเรียนหนองโกวิชาประสิทธิ์พิทยาคม</p>
         </div>
     </div>
-
     <!-- ========================================== -->
     <!-- JAVASCRIPT SYSTEM -->
     <!-- ========================================== -->
@@ -395,8 +390,14 @@
             if(isFetching) return;
             isFetching = true;
 
-            const alpineData = document.querySelector('[x-data]') ? document.querySelector('[x-data]').__x.$data : null;
-            if(alpineData) alpineData.isRefreshing = true;
+            // นำระบบควบคุม UI ของปุ่มรีเฟรชมาเขียนด้วย Vanilla JS แทน Alpine.js ที่มีปัญหา
+            const btnRefresh = document.getElementById('btnRefresh');
+            const iconRefresh = document.getElementById('iconRefresh');
+            const textRefresh = document.getElementById('textRefresh');
+
+            if(btnRefresh) btnRefresh.classList.add('opacity-75', 'cursor-not-allowed');
+            if(iconRefresh) iconRefresh.classList.add('animate-spin');
+            if(textRefresh) textRefresh.innerText = 'กำลังโหลด...';
 
             const tbody = document.getElementById('tableBody');
             
@@ -462,7 +463,10 @@
                 
                 updateDashboard(currentFilteredData);
                 
-                if(alpineData) alpineData.isRefreshing = false;
+                // คืนค่าปุ่มรีเฟรชกลับสู่สถานะปกติ
+                if(btnRefresh) btnRefresh.classList.remove('opacity-75', 'cursor-not-allowed');
+                if(iconRefresh) iconRefresh.classList.remove('animate-spin');
+                if(textRefresh) textRefresh.innerText = 'รีเฟรชข้อมูล';
                 isFetching = false;
             })
             .catch(error => {
@@ -473,7 +477,11 @@
                 }
                 
                 tbody.innerHTML = `<tr><td colspan="8" class="py-16 text-center text-rose-500 font-medium">${errorMsg}</td></tr>`;
-                if(alpineData) alpineData.isRefreshing = false;
+                
+                // คืนค่าปุ่มรีเฟรชกลับสู่สถานะปกติเมื่อเกิด Error
+                if(btnRefresh) btnRefresh.classList.remove('opacity-75', 'cursor-not-allowed');
+                if(iconRefresh) iconRefresh.classList.remove('animate-spin');
+                if(textRefresh) textRefresh.innerText = 'รีเฟรชข้อมูล';
                 isFetching = false;
             });
         }
