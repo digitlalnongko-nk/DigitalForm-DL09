@@ -242,22 +242,12 @@
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">Password (รหัสผ่าน)</label>
-                    <input type="password" id="adminPass" class="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+                    <input type="password" id="adminPass" class="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100" onkeypress="if(event.key === 'Enter') handleAdminLogin()">
                 </div>
                 
-                <button type="button" id="btnRequestOTP" onclick="handleRequestOTP()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3 rounded-xl text-sm font-medium transition-colors">
-                    ขอรหัส OTP เข้าอีเมล
+                <button type="button" onclick="handleAdminLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-indigo-200 mt-2">
+                    เข้าสู่ Dashboard
                 </button>
-
-                <div id="otpSection" class="hidden space-y-4 pt-4 border-t border-gray-100 mt-4">
-                    <div>
-                        <label class="block text-xs font-bold text-indigo-600 mb-1 text-center">กรอกรหัส OTP (6 หลัก)</label>
-                        <input type="text" id="adminOtp" maxlength="6" class="w-full px-3 py-3 border border-indigo-200 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 text-center tracking-[0.5em] font-bold text-lg bg-indigo-50/50">
-                    </div>
-                    <button type="button" onclick="verifyAdminLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-indigo-200">
-                        ยืนยันและเข้าสู่ Dashboard
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -607,7 +597,7 @@
         // ==========================================
         // ตั้งค่าระบบ URL
         // ==========================================
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyoih1w2x0vewTbd6bbeQhGAzD8vJztBvrLaM9 শুকvewTbd6bbeQhGAzD8vJztBvrLaM9oquem4z6F-E-tXgyjnWMp5Sr_6zZ9/exec';
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyoih1w2x0vewTbd6bbeQhGAzD8vJztBvrLaM9oquem4z6F-E-tXgyjnWMp5Sr_6zZ9/exec';
         
         // ==========================================
         // ฟังก์ชันเสริม: ส่งอีเมลแจ้งเตือนผู้ดูแลระบบแบบรวดเร็ว
@@ -625,30 +615,18 @@
         }
 
         // ==========================================
-        // ระบบเจ้าหน้าที่ (Admin Login & OTP)
+        // ระบบเจ้าหน้าที่ (Admin Login แบบไม่มี OTP)
         // ==========================================
         let loginFailCount = 0;
-        let generatedOTP = "";
 
-        function handleRequestOTP() {
+        function handleAdminLogin() {
             const id = document.getElementById('adminId').value;
             const pass = document.getElementById('adminPass').value;
-            const btn = document.getElementById('btnRequestOTP');
 
             if (id === 'Admin' && pass === '66440763') {
-                // ข้อมูลถูกต้อง -> จำลองสร้างรหัส OTP 6 หลัก
-                generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-                document.getElementById('otpSection').classList.remove('hidden');
-                btn.innerText = 'ส่งรหัสใหม่แล้ว';
-                btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
-
-                // ส่ง OTP เข้าอีเมล
-                sendEmailAlertToAdmin(
-                    "🔑 รหัส OTP สำหรับ Dashboard",
-                    "รหัส OTP ของคุณคือ: " + generatedOTP + "\nโปรดใช้รหัสนี้ยืนยันตัวตน (หากคุณไม่ได้ขอรหัส แสดงว่ามีคนพยายามเข้าสู่ระบบ)"
-                );
-                alert('ส่งรหัส OTP ไปที่ chuwja@gmail.com เรียบร้อยแล้วครับ');
-                loginFailCount = 0; // รีเซ็ตการนับเมื่อพิมพ์ถูก
+                // ข้อมูลถูกต้อง -> พาไปหน้า Dashboard ทันที
+                window.location.href = 'https://digitalformdl09.vercel.app/dashboard.html';
+                loginFailCount = 0; 
             } else {
                 loginFailCount++;
                 document.getElementById('adminPass').value = '';
@@ -657,22 +635,13 @@
                     alert('คุณกรอกรหัสผิด 5 ครั้ง! ระบบระงับการเข้าสู่ระบบและส่งการแจ้งเตือนไปยังอีเมลผู้ดูแลแล้ว');
                     sendEmailAlertToAdmin(
                         "🚨 แจ้งเตือน: มีคนต้องการเข้าสู่ระบบ ข้อมูลของท่าน",
-                        `มีการพยายามกรอก ID/Password ผิดพลาดครบ 5 ครั้ง\nID ที่ใช้ลอง: ${id}`
+                        `มีการพยายามเข้าสู่ระบบ Dashboard ด้วย ID/Password ผิดพลาดครบ 5 ครั้ง\nID ที่ใช้ลอง: ${id}`
                     );
                     document.getElementById('adminLoginModal').classList.add('hidden');
                     loginFailCount = 0; 
                 } else {
                     alert(`ID หรือ Password ไม่ถูกต้อง (ผิดไปแล้ว ${loginFailCount} ครั้ง)`);
                 }
-            }
-        }
-
-        function verifyAdminLogin() {
-            const userOtp = document.getElementById('adminOtp').value;
-            if (userOtp === generatedOTP && generatedOTP !== "") {
-                window.location.href = 'https://digitalformdl09.vercel.app/dashboard.html';
-            } else {
-                alert('รหัส OTP ไม่ถูกต้อง!');
             }
         }
 
